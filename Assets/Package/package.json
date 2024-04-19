@@ -1,0 +1,13 @@
+{
+  "name": "com.hgs.rl-agents",
+  "version": "1.0.0",
+  "displayName": "HGS Reinforced Learning Agents",
+  "description": "Reinforced learning agents using Deep Q-Learning",
+  "unity": "2022.3",
+  "keywords": [],
+  "author": {
+    "name": "Homy Game Studio",
+    "email": "contato@homygamestudio.com"
+  },
+  "dependencies": {}
+}
