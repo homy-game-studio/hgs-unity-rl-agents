@@ -1,6 +1,6 @@
 {
   "name": "com.hgs.rl-agents",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "displayName": "HGS Reinforced Learning Agents",
   "description": "Reinforced learning agents using Deep Q-Learning",
   "unity": "2022.3",

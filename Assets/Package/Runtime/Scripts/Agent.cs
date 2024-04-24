@@ -6,7 +6,6 @@ namespace HGS.RLAgents
   {
     public Brain brain;
     [SerializeField] float decisionInterval = 0.15f;
-    [SerializeField] int epochs = 10;
     [SerializeField] protected float maxEpochDuration = 5f;
 
     private float _epochTimer = 0;
