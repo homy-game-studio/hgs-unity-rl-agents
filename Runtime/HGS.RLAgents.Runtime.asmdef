@@ -1,5 +1,6 @@
 {
     "name": "HGS.RLAgents.Runtime",
+    "rootNamespace": "HGS.RLAgents",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
