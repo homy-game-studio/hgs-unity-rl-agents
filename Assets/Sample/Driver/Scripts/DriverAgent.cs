@@ -1,0 +1,103 @@
+using System.Collections.Generic;
+using HGS.RLAgents.Agents;
+using UnityEngine;
+
+namespace HGS.RLAgents.DriverSample
+{
+    public class DriverAgent : Agent
+    {
+        [SerializeField] SpriteRenderer spriteRenderer;
+        [SerializeField] Rigidbody2D myRigidbody2D;
+        [SerializeField] DriverSensors sensors;
+        [SerializeField] float maxSpeed = 5f;
+        [SerializeField] float maxSteeringSpeed = 45f;
+
+        private List<int> checkpoints = new List<int>();
+
+        Vector2 _startPosition;
+        Vector3 _startEulerAngles;
+        float _speed = 0;
+        float _steering = 0;
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            _startPosition = transform.position;
+            _startEulerAngles = transform.eulerAngles;
+            spriteRenderer.color = Random.ColorHSV();
+        }
+
+        protected override float[] GetInput()
+        {
+            float[] sensorInput = sensors.Distances;
+
+            return new float[] {
+                sensorInput[0],
+                sensorInput[1],
+                sensorInput[2],
+                sensorInput[3],
+                sensorInput[4],
+            };
+        }
+
+        protected override void ProcessOutput(float[] output)
+        {
+            reward -= 0.01f;
+            _speed = Mathf.Clamp(output[0] * maxSpeed, 0, maxSpeed);
+            _steering = output[1] * maxSteeringSpeed;
+        }
+
+        protected void FixedUpdate()
+        {
+            if (!active) return;
+
+            myRigidbody2D.linearVelocity = transform.right * _speed;
+            myRigidbody2D.MoveRotation(myRigidbody2D.rotation + _steering * Time.fixedDeltaTime);
+        }
+
+        public override void Restart()
+        {
+            base.Restart();
+            myRigidbody2D.linearVelocity = Vector2.zero;
+            myRigidbody2D.rotation = 0;
+            transform.position = _startPosition;
+            transform.eulerAngles = _startEulerAngles;
+        }
+
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("Map"))
+            {
+                myRigidbody2D.linearVelocity = Vector2.zero;
+                myRigidbody2D.rotation = 0;
+                active = false;
+                reward -= 1f;
+                CompleteAgentEpoch();
+            }
+        }
+
+        private void ReachCheckpoint(int checkpoint)
+        {
+            if (checkpoints.Contains(checkpoint)) return;
+
+            reward += checkpoint;
+            checkpoints.Add(checkpoint);
+
+            if(checkpoint == 14)
+            {
+                CompleteAgentEpoch();
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.gameObject.CompareTag("Checkpoint"))
+            {
+                var checkpointTxt = collision.gameObject.name.Replace("Checkpoint", "");
+                var checkpoint = int.Parse(checkpointTxt);
+                ReachCheckpoint(checkpoint);
+            }
+        }
+    }
+}
