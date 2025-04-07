@@ -10,9 +10,9 @@ namespace HGS.RLAgents.Agents
         private float _timer = 0;
         public float reward = 0;
 
-        AgentEnvironment env;
+        public AgentEnvironment Environment { get; set; }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             model.Initialize();
         }
@@ -24,6 +24,11 @@ namespace HGS.RLAgents.Agents
 
         protected abstract float[] GetInput();
         protected abstract void ProcessOutput(float[] output);
+
+        public void CompleteAgentEpoch()
+        {
+            Environment.CompleteAgentEpoch();
+        }
 
         protected virtual void FeedFoward()
         {
