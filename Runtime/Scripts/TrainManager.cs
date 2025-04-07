@@ -1,46 +1,49 @@
+using System.Collections.Generic;
+using HGS.RLAgents.Agents;
 using UnityEngine;
 
 namespace HGS.RLAgents
 {
     public class TrainManager : MonoBehaviour
     {
-        [SerializeField] Brain brain;
-        [SerializeField] GameObject agentPrefab;
-        [SerializeField] string modelPath = "/SavedModels/model.json";
-        [SerializeField] int epochs = 10;
-        [SerializeField] int agentsByEpoch = 10;
-        [SerializeField] int stepsByEpoch = 100;
-        [SerializeField] float maxEpochDuration = 5f;
-        [SerializeField] float saveRate = 2f;
-        [SerializeField] float timeScale = 1;
+        [SerializeField] List<AgentEnvironment> environments = new List<AgentEnvironment>();
+        [SerializeField, Range(0.5f, 30f)] float timeScale = 1.0f;
 
-        float _saveTimer = 0;
+        private int _index = -1;
 
-
-        // Método para salvar o modelo
-        protected virtual void SaveModel()
+        private void Awake()
         {
-            string filePath = Application.dataPath + modelPath;
-            brain.SaveModel(filePath);
+            Next();
         }
 
-        private void SaveModelUpdate()
+        private void Update()
         {
-            if (_saveTimer >= saveRate)
-            {
-                SaveModel();
-                _saveTimer = 0;
-            }
-        }
-
-        protected virtual void Update()
-        {
-            if (!brain.trainMode) return;
-
-            SaveModelUpdate();
-
-            _saveTimer += Time.unscaledDeltaTime;
             Time.timeScale = timeScale;
+        }
+
+        private void Next()
+        {
+            _index++;
+
+            if (_index > 0)
+            {
+                environments[_index].betterModel = environments[_index - 1].betterModel;
+            }
+
+            environments[_index].onFinish += OnEnvironmentFinish;
+            environments[_index].Run();
+        }
+
+        private void OnEnvironmentFinish(Agent betterAgent)
+        {
+            if (_index + 1 < environments.Count)
+            {
+                Next();
+            }
+            else
+            {
+                Debug.Log("Treino concluído!");
+            }
         }
     }
 }
