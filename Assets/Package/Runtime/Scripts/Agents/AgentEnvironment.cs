@@ -16,6 +16,7 @@ namespace HGS.RLAgents.Agents
 
         protected List<Agent> agents = new List<Agent>();
 
+        private int _completedAgents = 0;
         public int epoch = 0;
         float _timer;
 
@@ -25,6 +26,15 @@ namespace HGS.RLAgents.Agents
         public bool IsRunning { get; private set; } = false;
 
         public Action<Agent> onFinish;
+
+        public void CompleteAgentEpoch()
+        {
+            _completedAgents++;
+            if (_completedAgents == agentsByEpoch)
+            {
+                FinishEpoch();
+            }
+        }
 
         public virtual void Run()
         {
@@ -57,8 +67,6 @@ namespace HGS.RLAgents.Agents
             if (_timer >= maxEpochDuration)
             {
                 FinishEpoch();
-                if (epoch < epochs) StartEpoch();
-                _timer = 0;
             }
 
             _timer += Time.deltaTime;
@@ -66,6 +74,7 @@ namespace HGS.RLAgents.Agents
 
         public virtual void FinishEpoch()
         {
+            _completedAgents = 0;
             var betterAgent = FindBetterAgent();
             var betterReward = betterAgent.reward;
 
@@ -83,6 +92,12 @@ namespace HGS.RLAgents.Agents
             {
                 Finish(betterAgent);
             }
+            else
+            {
+                StartEpoch();
+            }
+
+            _timer = 0;
         }
 
         public void StartEpoch()
@@ -128,7 +143,9 @@ namespace HGS.RLAgents.Agents
             agent.name = $"[{name}-{epoch}] {agentPrefab.name}";
             agent.model = clonnedModel;
             agent.active = true;
+            agent.Environment = this;
 
+            agent.Initialize();
             agent.Restart();
 
             return agent;
