@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7917564267020052530}
   - component: {fileID: 4255182002283294351}
   m_Layer: 0
-  m_Name: Agent
+  m_Name: FollowTargetAgent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
