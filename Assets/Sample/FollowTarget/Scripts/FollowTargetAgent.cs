@@ -1,83 +1,65 @@
+using HGS.RLAgents.Agents;
 using UnityEngine;
 
 namespace HGS.RLAgents.FollowTargetSample
 {
     public class FollowTargetAgent : Agent
     {
-        [SerializeField] Transform target;
+        [SerializeField] SpriteRenderer spriteRenderer;
         [SerializeField] float moveSpeed = 5f;
         [SerializeField] float maxDistance = 11f;
-        [SerializeField] float distanceToReachTarget = 1f;
 
+        Transform _target;
         Vector2 _dir = Vector2.zero;
         Vector2 _startPosition;
-        float _initialDistance = 0;
-        float _endDistance = 0;
 
         void Awake()
         {
+            _target = GameObject.Find("Target").transform;
             _startPosition = transform.position;
+            spriteRenderer.color = Random.ColorHSV();
         }
 
-        protected override void Restart()
+        protected override float[] GetInput()
         {
-            transform.position = _startPosition;
+            return new float[] {
+                transform.position.x,
+                transform.position.y,
+                _target.position.x,
+                _target.position.y
+            };
         }
 
-        protected override void ExecuteAction(int action)
+        protected override void ProcessOutput(float[] output)
         {
-            switch (action)
+            reward -= 0.015f;
+            if (Vector2.Distance(transform.position, _target.position) < 0.5f)
             {
-                case 0: _dir = Vector2.left; break;
-                case 1: _dir = Vector2.up; break;
-                case 2: _dir = Vector2.right; break;
-                case 3: _dir = Vector2.down; break;
-                case 4: _dir = Vector2.left + Vector2.up; break;
-                case 5: _dir = Vector2.right + Vector2.up; break;
-                case 6: _dir = Vector2.left + Vector2.down; break;
-                case 7: _dir = Vector2.right + Vector2.down; break;
+                reward += 1f;
+                active = false;
+                return;
             }
-        }
 
-        protected override void StartDecision()
-        {
-            base.StartDecision();
-            _initialDistance = Vector2.Distance(target.position, transform.position);
-        }
-
-        protected override void EndDecision()
-        {
-            base.EndDecision();
-
-            _endDistance = Vector2.Distance(target.position, transform.position);
-            if (_endDistance <= 1f)
-            {
-                FinishEpoch();
-            }
-        }
-
-        protected override float GetReward()
-        {
-            var reward = 1f - _endDistance / 3f;
-            if (_endDistance <= 1.5f) return reward * 2f;
-            if (_endDistance > _initialDistance) return -1f;
-            return reward;
-        }
-
-        protected override float[] GetState()
-        {
-            var direction = (transform.position - target.position).normalized;
-            return new float[] { direction.x, direction.y };
+            _dir.x = Mathf.Clamp(output[0], -1f, 1f);
+            _dir.y = Mathf.Clamp(output[1], -1f, 1f);
         }
 
         protected override void Update()
         {
             base.Update();
-            transform.Translate(_dir * Time.deltaTime * moveSpeed);
+            if (!active) return;
+            transform.Translate(_dir.normalized * Time.deltaTime * moveSpeed);
             transform.position = new Vector2(
                 Mathf.Clamp(transform.position.x, -maxDistance, maxDistance),
                 Mathf.Clamp(transform.position.y, -maxDistance, maxDistance)
             );
+        }
+
+        public override void Restart()
+        {
+            base.Restart();
+            transform.position = _startPosition;
+            _dir = Vector2.zero;
         }
     }
 }
