@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-using HGS.RLAgents.Agents;
+using HGS.RLAgents.Sensors;
 using UnityEngine;
 
 namespace HGS.RLAgents.DriverSample
@@ -8,85 +9,80 @@ namespace HGS.RLAgents.DriverSample
     {
         [SerializeField] SpriteRenderer spriteRenderer;
         [SerializeField] Rigidbody2D myRigidbody2D;
-        [SerializeField] DriverSensors sensors;
+        [SerializeField] RaySensor raySensor;
         [SerializeField] float maxSpeed = 5f;
         [SerializeField] float maxSteeringSpeed = 45f;
 
-        private List<int> checkpoints = new List<int>();
-
         Vector2 _startPosition;
         Vector3 _startEulerAngles;
-        float _speed = 0;
-        float _steering = 0;
 
-        public override void Initialize()
+        public List<int> Checkpoints { get; private set; } = new List<int>();
+        public float Speed { get; private set; } = 0;
+        public float Steering { get; private set; } = 0;
+        public bool IsCollidedWithMap { get; private set; } = false;
+        public bool IsCompletedMap { get; private set; } = false;
+
+        public Action onCollideWithMapEvt;
+        public Action onCompleteMapEvt;
+
+        protected override void Awake()
         {
-            base.Initialize();
+            base.Awake();
             _startPosition = transform.position;
             _startEulerAngles = transform.eulerAngles;
-            spriteRenderer.color = Random.ColorHSV();
+            spriteRenderer.color = UnityEngine.Random.ColorHSV();
         }
 
         protected override float[] GetInput()
         {
-            float[] sensorInput = sensors.Distances;
+            var sensorInput = raySensor.Infos;
 
             return new float[] {
-                sensorInput[0],
-                sensorInput[1],
-                sensorInput[2],
-                sensorInput[3],
-                sensorInput[4],
+                sensorInput[0].distance,
+                sensorInput[1].distance,
+                sensorInput[2].distance,
+                sensorInput[3].distance,
+                sensorInput[4].distance,
+                sensorInput[5].distance,
+                sensorInput[6].distance,
+                sensorInput[7].distance,
             };
         }
 
-        protected override void ProcessOutput(float[] output)
+        protected override void EvaluateOutput(float[] output)
         {
-            reward -= 0.01f;
-            _speed = Mathf.Clamp(output[0] * maxSpeed, 0, maxSpeed);
-            _steering = output[1] * maxSteeringSpeed;
+            Speed = Mathf.Clamp(output[0] * maxSpeed, 0, maxSpeed);
+            Steering = output[1] * maxSteeringSpeed;
         }
 
         protected void FixedUpdate()
         {
             if (!active) return;
 
-            myRigidbody2D.linearVelocity = transform.right * _speed;
-            myRigidbody2D.MoveRotation(myRigidbody2D.rotation + _steering * Time.fixedDeltaTime);
+            myRigidbody2D.linearVelocity = transform.right * Speed;
+            myRigidbody2D.MoveRotation(myRigidbody2D.rotation + Steering * Time.fixedDeltaTime);
         }
-
-        public override void Restart()
-        {
-            base.Restart();
-            myRigidbody2D.linearVelocity = Vector2.zero;
-            myRigidbody2D.rotation = 0;
-            transform.position = _startPosition;
-            transform.eulerAngles = _startEulerAngles;
-        }
-
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.CompareTag("Map"))
-            {
-                myRigidbody2D.linearVelocity = Vector2.zero;
-                myRigidbody2D.rotation = 0;
-                active = false;
-                reward -= 1f;
-                CompleteAgentEpoch();
-            }
+            if (!collision.gameObject.CompareTag("Map")) return;
+
+            Stop();
+            IsCollidedWithMap = true;
+            onCollideWithMapEvt?.Invoke();
         }
 
         private void ReachCheckpoint(int checkpoint)
         {
-            if (checkpoints.Contains(checkpoint)) return;
+            if (Checkpoints.Contains(checkpoint)) return;
 
-            reward += checkpoint;
-            checkpoints.Add(checkpoint);
+            Checkpoints.Add(checkpoint);
 
-            if(checkpoint == 14)
+            if (Checkpoints.Count == 14)
             {
-                CompleteAgentEpoch();
+                Stop();
+                IsCompletedMap = true;
+                onCompleteMapEvt?.Invoke();
             }
         }
 
@@ -98,6 +94,26 @@ namespace HGS.RLAgents.DriverSample
                 var checkpoint = int.Parse(checkpointTxt);
                 ReachCheckpoint(checkpoint);
             }
+        }
+
+        private void Stop()
+        {
+            myRigidbody2D.linearVelocity = Vector2.zero;
+            myRigidbody2D.rotation = 0;
+            Speed = 0;
+            Steering = 0;
+            active = false;
+        }
+
+        public void Respawn()
+        {
+            Stop();
+            transform.position = _startPosition;
+            transform.eulerAngles = _startEulerAngles;
+            IsCompletedMap = false;
+            IsCollidedWithMap = false;
+            Checkpoints.Clear();
+            active = true;
         }
     }
 }

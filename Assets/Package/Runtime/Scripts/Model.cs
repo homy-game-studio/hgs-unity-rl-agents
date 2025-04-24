@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.IO;
 using HGS.RLAgents.NeuralNetworks;
 
-namespace HGS.RLAgents.Agents
+namespace HGS.RLAgents
 {
     [CreateAssetMenu(fileName = "Model", menuName = "HGS/RLAgents/Model")]
     public class Model : ScriptableObject

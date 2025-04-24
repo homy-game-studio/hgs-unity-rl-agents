@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d878e9db25ec6b41b878dad0ce58ef3, type: 3}
-  m_Name: DriverModel
+  m_Name: HunterModel
   m_EditorClassIdentifier: 
-  layers: 0800000002000000
+  layers: 0500000003000000
   modelAsset: {fileID: 0}
   neuralNetwork:
     layers: []

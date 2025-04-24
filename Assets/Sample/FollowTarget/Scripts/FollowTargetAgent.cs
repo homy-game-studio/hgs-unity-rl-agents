@@ -1,4 +1,3 @@
-using HGS.RLAgents.Agents;
 using UnityEngine;
 
 namespace HGS.RLAgents.FollowTargetSample
@@ -13,8 +12,9 @@ namespace HGS.RLAgents.FollowTargetSample
         Vector2 _dir = Vector2.zero;
         Vector2 _startPosition;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _target = GameObject.Find("Target").transform;
             _startPosition = transform.position;
             spriteRenderer.color = Random.ColorHSV();
@@ -30,7 +30,7 @@ namespace HGS.RLAgents.FollowTargetSample
             };
         }
 
-        protected override void ProcessOutput(float[] output)
+        protected override void EvaluateOutput(float[] output)
         {
             reward -= 0.015f;
             if (Vector2.Distance(transform.position, _target.position) < 0.5f)
@@ -53,13 +53,6 @@ namespace HGS.RLAgents.FollowTargetSample
                 Mathf.Clamp(transform.position.x, -maxDistance, maxDistance),
                 Mathf.Clamp(transform.position.y, -maxDistance, maxDistance)
             );
-        }
-
-        public override void Restart()
-        {
-            base.Restart();
-            transform.position = _startPosition;
-            _dir = Vector2.zero;
         }
     }
 }
