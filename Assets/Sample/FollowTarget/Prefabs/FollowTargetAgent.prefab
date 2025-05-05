@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7963605861034895779}
   - component: {fileID: 7917564267020052530}
   - component: {fileID: 4255182002283294351}
+  - component: {fileID: 8818992169105373624}
   m_Layer: 0
   m_Name: FollowTargetAgent
   m_TagString: Untagged
@@ -46,8 +47,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 11400000, guid: 261265a1b2c501a46963ce8f9256493b, type: 2}
-  interval: 0.15
+  evaluateInterval: 0.15
   active: 1
+  reward: 0
+  learningRate: 0.1
+  evaluationCount: 0
+  sensor: {fileID: 8818992169105373624}
+  target: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  targetSpriteRenderer: {fileID: 0}
   spriteRenderer: {fileID: 4255182002283294351}
   moveSpeed: 5
   maxDistance: 11
@@ -106,3 +114,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8818992169105373624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9115185592718661272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 646a8148265366348ba591299dc877ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensorLength: 10.77
+  sensorCount: 15
+  sensorStartAngle: 0
+  sensorAngle: 336
+  detectionLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  showGizmos: 1

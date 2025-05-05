@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d878e9db25ec6b41b878dad0ce58ef3, type: 3}
   m_Name: DriverModel
   m_EditorClassIdentifier: 
-  layers: 0800000002000000
+  populationId: driver
+  mutationProbability: 0.2
+  crossoverPoint: 3
+  neuralNetworkPoint: 3
+  layers:
+  - size: 2
+    activation: 1
   modelAsset: {fileID: 0}
-  neuralNetwork:
-    layers: []
+  inputSize: 8

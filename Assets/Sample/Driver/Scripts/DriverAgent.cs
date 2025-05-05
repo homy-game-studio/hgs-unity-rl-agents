@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HGS.RLAgents.Evolution;
 using HGS.RLAgents.Sensors;
 using UnityEngine;
 
@@ -30,7 +31,16 @@ namespace HGS.RLAgents.DriverSample
             base.Awake();
             _startPosition = transform.position;
             _startEulerAngles = transform.eulerAngles;
-            spriteRenderer.color = UnityEngine.Random.ColorHSV();
+        }
+
+        public override void SetCromossome(Cromossome cromossome)
+        {
+            base.SetCromossome(cromossome);
+            spriteRenderer.color = new Color(
+                (cromossome.GetGene(0) + 1f) / 2f,
+                (cromossome.GetGene(1) + 1f) / 2f,
+                (cromossome.GetGene(2) + 1f) / 2f
+            );
         }
 
         protected override float[] GetInput()
@@ -96,16 +106,15 @@ namespace HGS.RLAgents.DriverSample
             }
         }
 
-        private void Stop()
+        public override void Stop()
         {
             myRigidbody2D.linearVelocity = Vector2.zero;
             myRigidbody2D.rotation = 0;
             Speed = 0;
             Steering = 0;
-            active = false;
         }
 
-        public void Respawn()
+        public override void Respawn()
         {
             Stop();
             transform.position = _startPosition;
@@ -113,7 +122,6 @@ namespace HGS.RLAgents.DriverSample
             IsCompletedMap = false;
             IsCollidedWithMap = false;
             Checkpoints.Clear();
-            active = true;
         }
     }
 }

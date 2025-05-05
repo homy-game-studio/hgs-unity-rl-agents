@@ -54,11 +54,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ac5d055254e63418d94f2db2e3b260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
+  modelDefinition: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
+  modelFirstGeneIndex: 0
   evaluateInterval: 0.15
   active: 0
   reward: 0
-  learningRate: 0.1
+  evaluationCount: 0
   spriteRenderer: {fileID: 4430520826720084246}
   myRigidbody2D: {fileID: 233637658491896764}
   raySensor: {fileID: 6188028244689823595}
@@ -84,6 +85,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   showGizmos: 1
+  tagList: []
 --- !u!61 &5948937327535034678
 BoxCollider2D:
   m_ObjectHideFlags: 0

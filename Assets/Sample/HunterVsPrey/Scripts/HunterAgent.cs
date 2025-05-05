@@ -55,6 +55,16 @@ namespace HGS.RLAgents.HunterVsPreySample
             myRigidbody2D.MoveRotation(myRigidbody2D.rotation + _steering * Time.fixedDeltaTime);
         }
 
+        public override void Respawn()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void Stop()
+        {
+            throw new System.NotImplementedException();
+        }
+
         //protected override void OnStartEpoch()
         //{
         //    myRigidbody2D.linearVelocity = Vector2.zero;

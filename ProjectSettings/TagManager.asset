@@ -8,6 +8,7 @@ TagManager:
   - Car
   - Checkpoint
   - Enemy
+  - Pickable
   layers:
   - Default
   - TransparentFX
@@ -19,8 +20,8 @@ TagManager:
   - Obstacle
   - Player
   - Enemy
-  - 
-  - 
+  - Target
+  - Pickable
   - 
   - 
   - 
