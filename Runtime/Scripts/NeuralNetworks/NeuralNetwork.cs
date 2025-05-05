@@ -1,33 +1,43 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HGS.RLAgents.NeuralNetworks
 {
     [Serializable]
     public class NeuralNetwork
     {
-        public List<Layer> layers;
+        public List<NeuralNetworkLayer> layers;
+        public int WeightCount => layers.Sum(layer => layer.WeightCount);
 
-        public void Initialize(int[] layerSizes)
+        public void Initialize(GenerationModelLayer[] modelLayers, int inputSize, int outputSize)
         {
-            layers = new List<Layer>();
+            layers = new List<NeuralNetworkLayer>();
+            var prevInputSize = inputSize;
 
-            for (int i = 0; i < layerSizes.Length - 1; i++)
+            for (int i = 0; i < modelLayers.Length; i++)
             {
-                layers.Add(new Layer
+                layers.Add(new NeuralNetworkLayer
                 {
-                    inputSize = layerSizes[i],
-                    outputSize = layerSizes[i + 1]
+                    inputSize = prevInputSize,
+                    outputSize = i == modelLayers.Length
+                        ? outputSize
+                        : modelLayers[i].size,
+                    activation = modelLayers[i].activation,
                 });
                 layers[i].Initialize();
+                prevInputSize = modelLayers[i].size;
             }
         }
 
-        public void RandomizeWeights(float factor)
+        public void SetWeights(float[] weights)
         {
+            var index = 0;
+
             foreach (var layer in layers)
             {
-                layer.RandomizeWeights(factor);
+                Array.Copy(weights, index, layer.weights, 0, layer.WeightCount);
+                index += layer.WeightCount;
             }
         }
 

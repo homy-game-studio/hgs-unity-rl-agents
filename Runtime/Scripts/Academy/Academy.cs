@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using HGS.RLAgents.Evolution;
 using UnityEngine;
 
 namespace HGS.RLAgents
@@ -13,15 +14,25 @@ namespace HGS.RLAgents
 
     public class Academy : MonoBehaviour
     {
-        [SerializeField] AcademyNaturalSelection _naturalSelection;
-        [SerializeField] AcademyRunner _runner;        
+        [SerializeField] Generation _generation;
+        [SerializeField] AcademyRunner _runner;
+        [SerializeField] AcademyEnvironmentReplication _environmentReplication;
+        [SerializeField, Range(1f, 15f)] float timescale = 1;
 
         private List<Environment> _environments = new List<Environment>();
-        private List<Agent> agents = new List<Agent>();
+
+        public int Generations => _runner.Generations;
+        public float MaxGenerationDuration
+        {
+            get => _runner.maxGenerationDuration;
+            set => _runner.maxGenerationDuration = value;
+        }
 
         private void Awake()
         {
-            _runner.onReachTime += FinishEpoch;
+            Time.timeScale = timescale;
+            _environmentReplication.Spawn(transform);
+            _runner.onReachTime += FinishGeneration;
         }
 
         private void Update()
@@ -31,18 +42,19 @@ namespace HGS.RLAgents
 
         private void Start()
         {
-            StartEpoch();
+            Initialize();
+            StartGeneration();
         }
 
         public void CompleteEnvironmentEpoch(Environment env)
         {
             var allEnvCompleted = _environments.All(env => env.IsCompleted);
-            if (allEnvCompleted) FinishEpoch();
+            if (allEnvCompleted) FinishGeneration();
         }
 
         public void AddAgent(Agent agent)
         {
-            agents.Add(agent);
+            _generation.AddAgent(agent);
         }
 
         public void AddEnvironment(Environment env)
@@ -50,9 +62,13 @@ namespace HGS.RLAgents
             _environments.Add(env);
         }
 
-        private void StartEpoch()
+        private void Initialize()
         {
-            _naturalSelection.Apply(agents);
+            _generation.Initialize();
+        }
+
+        private void StartGeneration()
+        {
             _runner.Restart();
             for (int i = 0; i < _environments.Count; i++)
             {
@@ -60,7 +76,7 @@ namespace HGS.RLAgents
             }
         }
 
-        private void FinishEpoch()
+        private void FinishGeneration()
         {
             _runner.Complete();
 
@@ -69,9 +85,10 @@ namespace HGS.RLAgents
                 _environments[i].FinishEpoch();
             }
 
-            if (!_runner.IsReachedMaxEpochs)
+            if (!_runner.IsReachedMaxGenerations)
             {
-                StartEpoch();
+                _generation.Tick();
+                StartGeneration();
             }
         }
     }
