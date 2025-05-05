@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace HGS.RLAgents.Sensors
 {
+    [Serializable]
     public struct Raycast2DSensorInfo
     {
         public float distance;
         public string tag;
+        public float tagIndex;
         public Vector2 position;
 
         public bool IsTouched => distance < 1;
@@ -22,6 +24,7 @@ namespace HGS.RLAgents.Sensors
         [SerializeField] float sensorAngle = 0f;
         [SerializeField] LayerMask detectionLayer;
         [SerializeField] bool showGizmos = true;
+        [SerializeField] List<string> tagList; 
 
         Vector2[] _directions;
         Raycast2DSensorInfo[] _infos;
@@ -67,6 +70,7 @@ namespace HGS.RLAgents.Sensors
 
             info.distance = hit.collider != null ? hit.distance / sensorLength : 1f;
             info.tag = hit.collider != null ? hit.collider.tag : "";
+            info.tagIndex = hit.collider != null ? tagList.IndexOf(hit.collider.tag)  : -1f;
             info.position = hit.point;
         }
 

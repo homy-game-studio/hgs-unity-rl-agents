@@ -3,27 +3,18 @@ using System;
 namespace HGS.RLAgents.NeuralNetworks
 {
     [Serializable]
-    public class Layer
+    public class NeuralNetworkLayer
     {
         public int inputSize;
         public int outputSize;
         public float[] weights;
+        public EActivation activation;
+
+        public int WeightCount => inputSize * outputSize;
 
         public void Initialize()
         {
-            weights = new float[inputSize * outputSize];
-        }
-
-        public void RandomizeWeights(float factor)
-        {
-            for (int i = 0; i < inputSize; i++)
-            {
-                for (int j = 0; j < outputSize; j++)
-                {
-                    int index = i * outputSize + j;
-                    weights[index] = weights[index] + UnityEngine.Random.Range(-factor, factor);
-                }
-            }
+            weights = new float[WeightCount];
         }
 
         public float[] FeedForward(float[] input)
@@ -39,7 +30,7 @@ namespace HGS.RLAgents.NeuralNetworks
                     sum += input[i] * weights[index];
                 }
 
-                output[j] = Activation.Tanh(sum);
+                output[j] = NeuralNetworkActivation.Do(sum, activation);
             }
 
             return output;

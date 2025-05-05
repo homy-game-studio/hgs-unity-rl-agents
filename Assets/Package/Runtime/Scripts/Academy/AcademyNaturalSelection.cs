@@ -9,16 +9,6 @@ namespace HGS.RLAgents
     {
         private void Mutate(IEnumerable<Agent> agents, Agent bestAgent)
         {
-            var bestModel = Model.Instantiate(bestAgent.model);
-            bestModel.name = bestAgent.name;
-
-            foreach (Agent agent in agents)
-            {
-                agent.model = Model.Instantiate(bestModel);
-                agent.model.RandomizeWeights(agent.learningRate);
-                agent.reward = 0;
-                agent.evaluationCount = 0;
-            }
         }
 
         private Agent SelectBestAgent(IEnumerable<Agent> agents)

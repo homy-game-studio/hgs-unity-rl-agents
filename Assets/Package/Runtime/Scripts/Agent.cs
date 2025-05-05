@@ -1,45 +1,60 @@
+using System;
+using HGS.RLAgents.Evolution;
+using HGS.RLAgents.NeuralNetworks;
 using UnityEngine;
 
 namespace HGS.RLAgents
 {
     public abstract class Agent : MonoBehaviour
     {
-        [Header("Evaluate Settings")]
-        public Model model;
+        [Header("Evolution")]
+        public Cromossome cromossome;
+        public GenerationModel model;
+
+        [Header("Evaluation")]
         public float evaluateInterval = 0.15f;
         public bool active = false;
 
         private float _timer = 0;
 
         public float reward = 0;
-        public float learningRate = 0;
         public int evaluationCount = 0;
 
+        float[] _lastInput;
+        float[] _lastOutput;
 
-        Academy _academy;
+        private NeuralNetwork _neuralNetwork;
+
+        public int CromossomeSize => _neuralNetwork.WeightCount + model.neuralNetworkPoint;
 
         protected virtual void Awake()
         {
-            _academy = FindAnyObjectByType<Academy>();
-            _academy.AddAgent(this);
-
-            var modelName = model.name;
-
-            model = Model.Instantiate(model);
-            model.name = modelName;
-            model.Initialize();
+            _neuralNetwork = new NeuralNetwork();
+            _neuralNetwork.Initialize(model.layers, model.inputSize, model.OutputSize);
         }
 
         protected abstract float[] GetInput();
         protected abstract void EvaluateOutput(float[] output);
 
+        public virtual void SetCromossome(Cromossome cromossome)
+        {
+            this.cromossome = cromossome;
+
+            var weights = new float[_neuralNetwork.WeightCount];
+            Array.Copy(cromossome.genes, model.neuralNetworkPoint, weights, 0, weights.Length);
+            _neuralNetwork.SetWeights(weights);
+        }
+
         protected virtual void FeedFoward()
         {
-            var _input = GetInput();
-            var _output = model.FeedForward(_input);
+            _lastInput = GetInput();
+            _lastOutput = _neuralNetwork.FeedForward(_lastInput);
             evaluationCount++;
-            EvaluateOutput(_output);
+            EvaluateOutput(_lastOutput);
         }
+
+        public abstract void Stop();
+        public abstract void Respawn();
 
         protected virtual void Update()
         {
