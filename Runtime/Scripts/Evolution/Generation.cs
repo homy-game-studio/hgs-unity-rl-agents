@@ -29,7 +29,7 @@ namespace HGS.RLAgents.Evolution
             }
         }
 
-        public void Tick()
+        public void Tick(int generation, int maxGenerations)
         {
             foreach (var population in populations)
             {
@@ -37,7 +37,7 @@ namespace HGS.RLAgents.Evolution
                 population.Value.Crossover();
                 population.Value.Mutate();
                 population.Value.Replace();
-                Debug.Log($"Population: {population.Key}, Reward: {population.Value.BestReward}");
+                Debug.Log($"{generation}/{maxGenerations} - Population: {population.Key}, Reward: {population.Value.BestReward}");
             }
         }
     }

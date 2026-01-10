@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace HGS.RLAgents.Evolution
 {
@@ -23,15 +24,15 @@ namespace HGS.RLAgents.Evolution
             genes[index] = UnityEngine.Random.Range(-1f, 1f);
         }
 
-        public void Mutate(float probability)
+        public void Mutate(float rate, float strength)
         {
             var size = genes.Length;
 
             for (int i = 0; i < size; i++)
             {
-                if (UnityEngine.Random.Range(0f, 1f) < probability)
+                if (UnityEngine.Random.Range(0f, 1f) < rate)
                 {
-                    genes[i] = UnityEngine.Random.Range(-1f, 1f);
+                    genes[i] = Mathf.Clamp(genes[i] + UnityEngine.Random.Range(-strength, strength), 0f, 1f);
                 }
             }
         }

@@ -10,7 +10,8 @@ namespace HGS.RLAgents.Evolution
         private List<Cromossome> _cromossomes = new List<Cromossome>();
 
         int _crossoverPoint;
-        float _mutationProbability;
+        float _mutationRate;
+        float _mutationStrength;
         float _bestReward;
 
         public float BestReward => _bestReward;
@@ -41,7 +42,8 @@ namespace HGS.RLAgents.Evolution
                 .ToList();
 
             _crossoverPoint = _bestAgents[0].model.crossoverPoint;
-            _mutationProbability = _bestAgents[0].model.mutationProbability;
+            _mutationRate = _bestAgents[0].model.mutationRate;
+            _mutationStrength = _bestAgents[0].model.mutationStrength;
             _bestReward = _bestAgents[0].reward;
 
             _bestCromossomes = _bestAgents
@@ -68,7 +70,7 @@ namespace HGS.RLAgents.Evolution
 
             for (var i = 0; i < populationSize; i++)
             {
-                _cromossomes[i].Mutate(_mutationProbability);
+                _cromossomes[i].Mutate(_mutationRate, _mutationStrength);
             }
         }
 

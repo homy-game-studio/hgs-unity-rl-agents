@@ -16,6 +16,7 @@ namespace HGS.RLAgents
         public bool IsRunning { get; set; }
         public bool IsReachedMaxGenerations => Generations >= maxGenerations;
         public int Generations { get; set; }
+        public int MaxGenerations => maxGenerations;
 
         public void Restart()
         {
