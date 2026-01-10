@@ -54,8 +54,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ac5d055254e63418d94f2db2e3b260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelDefinition: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
-  modelFirstGeneIndex: 0
+  cromossome:
+    genes: []
+  model: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
   evaluateInterval: 0.15
   active: 0
   reward: 0

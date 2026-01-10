@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: DriverModel
   m_EditorClassIdentifier: 
   populationId: driver
-  mutationProbability: 0.2
+  mutationRate: 0.2
+  mutationStrength: 0.5
   crossoverPoint: 3
   neuralNetworkPoint: 3
   layers:
   - size: 2
     activation: 1
-  modelAsset: {fileID: 0}
   inputSize: 8

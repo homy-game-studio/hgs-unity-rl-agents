@@ -318,9 +318,9 @@ MonoBehaviour:
     policies:
     - startEpoch: 0
       policy: {fileID: 797516673}
-    - startEpoch: 150
+    - startEpoch: 50
       policy: {fileID: 1521204260}
-    - startEpoch: 300
+    - startEpoch: 100
       policy: {fileID: 742924224}
   botttomLeftLimit: {fileID: 986779267}
   topRightLimit: {fileID: 719521437}

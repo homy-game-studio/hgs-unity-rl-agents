@@ -18,11 +18,8 @@ MonoBehaviour:
   crossoverPoint: 0
   neuralNetworkPoint: 0
   layers:
-  - size: 64
-    activation: 2
-  - size: 8
+  - size: 4
     activation: 2
   - size: 3
     activation: 1
-  modelAsset: {fileID: 0}
   inputSize: 15

@@ -2068,6 +2068,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592652ff295415a45ae6a75b9fca0537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxGenerationTime: 10
   env: {fileID: 998542376}
   agent: {fileID: 1927563459}
   maxEvaluations: 200
@@ -3825,10 +3826,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DriverAgent
       objectReference: {fileID: 0}
-    - target: {fileID: 3257548453163680185, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
-      propertyPath: model
-      value: 
-      objectReference: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
     - target: {fileID: 5823978168014669514, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
       propertyPath: m_LocalPosition.x
       value: -14.58

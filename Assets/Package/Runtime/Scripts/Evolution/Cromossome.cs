@@ -32,7 +32,8 @@ namespace HGS.RLAgents.Evolution
             {
                 if (UnityEngine.Random.Range(0f, 1f) < rate)
                 {
-                    genes[i] = Mathf.Clamp(genes[i] + UnityEngine.Random.Range(-strength, strength), 0f, 1f);
+                    //genes[i] = Mathf.Clamp(genes[i] + UnityEngine.Random.Range(-strength, strength), 0f, 1f);
+                    genes[i] = genes[i] + UnityEngine.Random.Range(-strength, strength);
                 }
             }
         }

@@ -1,50 +1,57 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HGS.RLAgents.NeuralNetworks
 {
     [Serializable]
     public class NeuralNetwork
     {
-        public List<NeuralNetworkLayer> layers;
-        public int WeightCount => layers.Sum(layer => layer.WeightCount);
+        public List<NeuralNetworkLayer> Layers { get; set; }
 
-        public void Initialize(GenerationModelLayer[] modelLayers, int inputSize, int outputSize)
+        public void AddLayer(NeuralNetworkLayer layer)
         {
-            layers = new List<NeuralNetworkLayer>();
-            var prevInputSize = inputSize;
-
-            for (int i = 0; i < modelLayers.Length; i++)
+            if (Layers == null)
             {
-                layers.Add(new NeuralNetworkLayer
-                {
-                    inputSize = prevInputSize,
-                    outputSize = i == modelLayers.Length
-                        ? outputSize
-                        : modelLayers[i].size,
-                    activation = modelLayers[i].activation,
-                });
-                layers[i].Initialize();
-                prevInputSize = modelLayers[i].size;
+                Layers = new List<NeuralNetworkLayer>();
             }
+            Layers.Add(layer);
         }
 
-        public void SetWeights(float[] weights)
+        public float[] GetParameters()
         {
-            var index = 0;
-
-            foreach (var layer in layers)
+            var parameters = new List<float>();
+            foreach (var layer in Layers)
             {
-                Array.Copy(weights, index, layer.weights, 0, layer.WeightCount);
-                index += layer.WeightCount;
+                parameters.AddRange(layer.GetWeights());
+                parameters.AddRange(layer.GetBiases());
+            }
+            return parameters.ToArray();
+        }
+
+        public void SetParameters(float[] parameters)
+        {
+            int index = 0;
+            foreach(var layer in Layers)
+            {
+                int weightCount = layer.WeightCount;
+                float[] weights = new float[weightCount];
+
+                Array.Copy(parameters, index, weights, 0, weightCount);
+                layer.SetWeights(weights);
+                index += weightCount;
+
+                float[] biases = new float[(int)layer.Size];
+                Array.Copy(parameters, index, biases, 0, (int)layer.Size);
+                layer.SetBiases(biases);
+
+                index += (int)layer.Size;
             }
         }
 
         public float[] FeedForward(float[] input)
         {
             float[] prevLayerOutput = input;
-            foreach (var layer in layers)
+            foreach (var layer in Layers)
             {
                 prevLayerOutput = layer.FeedForward(prevLayerOutput);
             }
