@@ -1,4 +1,3 @@
-using System;
 using HGS.RLAgents.Evolution;
 using HGS.RLAgents.NeuralNetworks;
 using UnityEngine;
@@ -9,7 +8,7 @@ namespace HGS.RLAgents
     {
         [Header("Evolution")]
         public Cromossome cromossome;
-        public GenerationModel model;
+        public Model model;
 
         [Header("Evaluation")]
         public float evaluateInterval = 0.15f;
@@ -23,14 +22,13 @@ namespace HGS.RLAgents
         float[] _lastInput;
         float[] _lastOutput;
 
-        private NeuralNetwork _neuralNetwork;
+        public int CromossomeSize => model.GetParametersCount();
 
-        public int CromossomeSize => _neuralNetwork.WeightCount + model.neuralNetworkPoint;
+        private NeuralNetwork _neuralNetwork;
 
         protected virtual void Awake()
         {
-            _neuralNetwork = new NeuralNetwork();
-            _neuralNetwork.Initialize(model.layers, model.inputSize, model.OutputSize);
+            _neuralNetwork = NeuralNetworkUtility.CreateFromModel(model);
         }
 
         protected abstract float[] GetInput();
@@ -39,10 +37,7 @@ namespace HGS.RLAgents
         public virtual void SetCromossome(Cromossome cromossome)
         {
             this.cromossome = cromossome;
-
-            var weights = new float[_neuralNetwork.WeightCount];
-            Array.Copy(cromossome.genes, model.neuralNetworkPoint, weights, 0, weights.Length);
-            _neuralNetwork.SetWeights(weights);
+            _neuralNetwork.SetParameters(cromossome.genes);
         }
 
         protected virtual void FeedFoward()

@@ -11,7 +11,7 @@ namespace HGS.RLAgents.NeuralNetworks
 
     public static class NeuralNetworkActivation
     {
-        public static float Do(float x, EActivation activation)
+        public static float FeedForward(float x, EActivation activation)
         {
             switch (activation)
             {
