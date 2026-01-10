@@ -11,6 +11,7 @@ namespace HGS.RLAgents.Sensors
         public string tag;
         public float tagIndex;
         public Vector2 position;
+        public GameObject gameObject;
 
         public bool IsTouched => distance < 1;
     }
@@ -24,7 +25,7 @@ namespace HGS.RLAgents.Sensors
         [SerializeField] float sensorAngle = 0f;
         [SerializeField] LayerMask detectionLayer;
         [SerializeField] bool showGizmos = true;
-        [SerializeField] List<string> tagList; 
+        [SerializeField] List<string> tagList;
 
         Vector2[] _directions;
         Raycast2DSensorInfo[] _infos;
@@ -63,15 +64,16 @@ namespace HGS.RLAgents.Sensors
             return directions;
         }
 
-        public void ExecuteRayInfo(Vector2 direction, out Raycast2DSensorInfo info)
+        public void ExecuteRay(Vector2 direction, out Raycast2DSensorInfo info)
         {
             var dir = transform.TransformDirection(direction);
             var hit = Physics2D.Raycast(transform.position, dir, sensorLength, detectionLayer);
 
             info.distance = hit.collider != null ? hit.distance / sensorLength : 1f;
             info.tag = hit.collider != null ? hit.collider.tag : "";
-            info.tagIndex = hit.collider != null ? tagList.IndexOf(hit.collider.tag)  : -1f;
+            info.tagIndex = hit.collider != null ? tagList.IndexOf(hit.collider.tag) : -1f;
             info.position = hit.point;
+            info.gameObject = hit.collider?.gameObject;
         }
 
         void FixedUpdate()
@@ -80,7 +82,7 @@ namespace HGS.RLAgents.Sensors
 
             for (int i = 0; i < _directions.Length; i++)
             {
-                ExecuteRayInfo(_directions[i], out Infos[i]);
+                ExecuteRay(_directions[i], out Infos[i]);
             }
         }
 
@@ -93,7 +95,7 @@ namespace HGS.RLAgents.Sensors
             for (int i = 0; i < directions.Length; i++)
             {
                 Raycast2DSensorInfo info;
-                ExecuteRayInfo(directions[i], out info);
+                ExecuteRay(directions[i], out info);
 
                 var dir = transform.TransformDirection(directions[i]);
                 var distance = info.distance * sensorLength;

@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace HGS.RLAgents.StackerSample
 {
-    public class StackerFinalPolicy : Policy
+    public class StackerPolicy : Policy
     {
         [SerializeField] StackerEnvironment env;
+        [SerializeField] int maxEvaluations = 200;
 
         private StackerAgent Agent => env.agent;
 
@@ -12,14 +13,10 @@ namespace HGS.RLAgents.StackerSample
         {
             var reward = 0f;
 
-            // Aproximar-se do checkpoint com uma caixa e/ou soltar
-            reward += 3f * Agent.DeliveredCrates;
-
             // Penalidades
             if (Agent.IsCollidedWithMap) reward -= 20f;
+            reward -= 0.1f * (float)Agent.evaluationCount / maxEvaluations;
             reward -= 0.1f * (Agent.IdleTime / env.MaxEpochDuration);
-            reward -= 0.01f * (Agent.TimeWithoutCrate / env.MaxEpochDuration);
-            reward -= 0.1f * (Agent.TimeToDeliveryCrate / env.MaxEpochDuration);
 
             Agent.reward = reward;
         }

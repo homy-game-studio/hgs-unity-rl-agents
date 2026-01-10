@@ -5,13 +5,6 @@ using UnityEngine;
 
 namespace HGS.RLAgents
 {
-    public class RewardHistoryEntry
-    {
-        public int Epoch;
-        public string AgentName;
-        public float Reward;
-    }
-
     public class Academy : MonoBehaviour
     {
         [SerializeField] Generation _generation;
@@ -22,6 +15,7 @@ namespace HGS.RLAgents
         private List<Environment> _environments = new List<Environment>();
 
         public int Generations => _runner.Generations;
+        public int MaxGenerations => _runner.MaxGenerations;
         public float MaxGenerationDuration
         {
             get => _runner.maxGenerationDuration;
@@ -87,7 +81,7 @@ namespace HGS.RLAgents
 
             if (!_runner.IsReachedMaxGenerations)
             {
-                _generation.Tick();
+                _generation.Tick(Generations, MaxGenerations);
                 StartGeneration();
             }
         }

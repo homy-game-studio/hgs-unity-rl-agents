@@ -18,12 +18,6 @@ namespace HGS.RLAgents
 
         public Action<Policy> onPolicyChange;
 
-        public void Begin()
-        {
-            var policyDefinition = policies[0];
-            onPolicyChange?.Invoke(policyDefinition.policy);
-        }
-
         public void FindNext(Academy academy)
         {
             var policyDefinition = policies.Find(p => p.startEpoch == academy.Generations);

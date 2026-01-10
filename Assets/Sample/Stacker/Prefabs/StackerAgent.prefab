@@ -400,9 +400,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensorLength: 30
-  sensorCount: 6
-  sensorStartAngle: 0
-  sensorAngle: 300
+  sensorCount: 7
+  sensorStartAngle: -22.5
+  sensorAngle: 45
   detectionLayer:
     serializedVersion: 2
     m_Bits: 3200
@@ -423,22 +423,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab5438c9b09808b41a283734bef5452e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cromossome:
+    genes: []
   model: {fileID: 11400000, guid: 62d963d5c864fe348aafeed9d4e60ca7, type: 2}
   evaluateInterval: 0.25
   active: 0
   reward: 0
-  learningRate: 0.1
   evaluationCount: 0
   pickupItemLayerMask:
     serializedVersion: 2
     m_Bits: 2048
   holdContainer: {fileID: 5066010414546445476}
   spriteRenderer: {fileID: 4255182002283294351}
-  checkpoint: {fileID: 0}
   raySensor: {fileID: 8818992169105373624}
   myRigidbody2D: {fileID: 7568093449102375622}
   maxSpeed: 5
-  maxSteeringSpeed: 45
+  maxSteeringSpeed: 90
+  checkpoint: {fileID: 0}
+  _crates:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!50 &7568093449102375622
 Rigidbody2D:
   serializedVersion: 5

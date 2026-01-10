@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HGS.RLAgents.Sensors;
 using UnityEngine;
@@ -13,12 +14,14 @@ namespace HGS.RLAgents.StackerSample
         [Header("Styling")]
         [SerializeField] SpriteRenderer spriteRenderer;
         [Header("Sensors")]
-        [SerializeField] Transform checkpoint;
         [SerializeField] RaySensor raySensor;
         [Header("Control")]
         [SerializeField] Rigidbody2D myRigidbody2D;
         [SerializeField] float maxSpeed = 5f;
         [SerializeField] float maxSteeringSpeed = 45f;
+        [Header("Env")]
+        [SerializeField] Transform checkpoint;
+        [SerializeField] List<Transform> _crates;
 
         Vector2 _startPosition;
         Vector3 _startEulerAngles;
@@ -28,22 +31,26 @@ namespace HGS.RLAgents.StackerSample
         public bool IsPressingHold { get; private set; } = false;
         // Sensors
         public float IdleTime { get; private set; } = 0;
-        public float MovingTime { get; private set; } = 0;
-        public int CollectedCrates { get; private set; } = 0;
+        public float TimeWithoutCrate { get; private set; } = 0;
+        public float MinDistanceToCrate { get; private set; } = 0;
+        public float AvgTimeToPickCrate { get; private set; } = 0;
+        public float MinDistanceToCheckpoint { get; private set; } = 0;
+        public float TimeToDeliveryCrate { get; private set; } = 0;
+        public int PickedCrateCount { get; private set; } = 0;
+        public int DeliveredCrates { get; private set; } = 0;
         public float Steering { get; private set; } = 0;
         public bool IsCollidedWithMap { get; private set; } = false;
         public bool IsPickedCrate { get; private set; } = false;
         public bool IsCollidedWithCrate { get; private set; } = false;
-        public float MinDistanceToCrate { get; private set; } = 1f;
-        public float MinDistanceToCheckpoint { get; private set; } = 1f;
         public bool IsHoldingCrate => _holdItem != null;
 
         public Action onCollideWithMapEvt;
         public Action onCollideWithCrateEvt;
         public Action onPickCrateEvt;
-        public Action onCollectCrateEvt;
+        public Action onDeliveryCrateEvt;
 
         private Transform _holdItem;
+        private Transform _crate;
 
         protected override void Awake()
         {
@@ -70,7 +77,9 @@ namespace HGS.RLAgents.StackerSample
                 sensorInput[4].tagIndex,
                 sensorInput[5].distance,
                 sensorInput[5].tagIndex,
-                IsHoldingCrate ? 1f : -1f
+                sensorInput[6].distance,
+                sensorInput[6].tagIndex,
+                IsHoldingCrate ? 1f : 0f
             };
         }
 
@@ -79,6 +88,13 @@ namespace HGS.RLAgents.StackerSample
             Speed = Mathf.Clamp(output[0] * maxSpeed, 0, maxSpeed);
             Steering = output[1] * maxSteeringSpeed;
             IsPressingHold = output[2] > 0.5f;
+        }
+
+        private void FindNearestCrate()
+        {
+            _crate = _crates
+                .Where(item => item.gameObject.activeSelf)
+                .OrderBy(item => Vector2.Distance(item.position, transform.position)).FirstOrDefault();
         }
 
         private void Pick()
@@ -95,11 +111,13 @@ namespace HGS.RLAgents.StackerSample
                 _holdItem.SetParent(holdContainer);
                 _holdItem.localPosition = Vector3.zero;
                 _holdItem.localRotation = Quaternion.identity;
+                PickedCrateCount++;
+                AvgTimeToPickCrate = TimeWithoutCrate / PickedCrateCount;
                 onPickCrateEvt?.Invoke();
             }
         }
 
-        public void Collect()
+        public void Delivery()
         {
             if (!IsHoldingCrate) return;
 
@@ -107,11 +125,11 @@ namespace HGS.RLAgents.StackerSample
 
             Drop();
 
-            CollectedCrates++;
-            onCollectCrateEvt?.Invoke();
+            DeliveredCrates++;
+            onDeliveryCrateEvt?.Invoke();
         }
 
-        private void Drop()
+        public void Drop()
         {
             if (!IsHoldingCrate) return;
 
@@ -120,6 +138,7 @@ namespace HGS.RLAgents.StackerSample
 
             _holdItem.SetParent(null);
             _holdItem = null;
+            FindNearestCrate();
         }
 
         protected override void Update()
@@ -135,7 +154,7 @@ namespace HGS.RLAgents.StackerSample
             {
                 if (Vector2.Distance(_holdItem.transform.position, checkpoint.position) <= 0.8f)
                 {
-                    Collect();
+                    Delivery();
                 }
                 else
                 {
@@ -143,22 +162,22 @@ namespace HGS.RLAgents.StackerSample
                 }
             }
 
-            var sensorInput = raySensor.Infos;
-
-            var bestCrate = sensorInput
-                .Where(ray => ray.tag == "Pickable")
-                .OrderBy(ray => ray.distance)
-                .FirstOrDefault();
-
-            if (bestCrate.distance > 0 && MinDistanceToCrate > bestCrate.distance)
-            {
-                MinDistanceToCrate = bestCrate.distance;
-            }
-
             if (IsHoldingCrate)
             {
-                var distanceToCheckpoint = Vector2.Distance(transform.position.normalized, checkpoint.position.normalized);
-                MinDistanceToCheckpoint = Mathf.Min(MinDistanceToCheckpoint, distanceToCheckpoint);
+                var checkpointDistance = Vector2.Distance(checkpoint.position, transform.position);
+                if (checkpointDistance < MinDistanceToCheckpoint)
+                {
+                    MinDistanceToCheckpoint = checkpointDistance;
+                }
+            }
+
+            if (!IsHoldingCrate && _crate != null)
+            {
+                var crateDistance = Vector2.Distance(_crate.position, transform.position);
+                if (crateDistance < MinDistanceToCrate)
+                {
+                    MinDistanceToCrate = crateDistance;
+                }
             }
         }
 
@@ -173,10 +192,13 @@ namespace HGS.RLAgents.StackerSample
             {
                 IdleTime += Time.fixedDeltaTime;
             }
-            else
+
+            if (!IsHoldingCrate)
             {
-                MovingTime += Time.fixedDeltaTime;
+                TimeWithoutCrate += Time.fixedDeltaTime;
             }
+
+            TimeToDeliveryCrate += Time.fixedDeltaTime;
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -205,6 +227,7 @@ namespace HGS.RLAgents.StackerSample
 
         public override void Respawn()
         {
+            FindNearestCrate();
             Stop();
             Drop();
 
@@ -212,14 +235,17 @@ namespace HGS.RLAgents.StackerSample
             transform.eulerAngles = _startEulerAngles;
 
             // Sensors
+            PickedCrateCount = 0;
+            AvgTimeToPickCrate = 0f;
+            MinDistanceToCheckpoint = 10f;
+            MinDistanceToCrate = 10f;
+            TimeWithoutCrate = 0;
+            TimeToDeliveryCrate = 0;
             IdleTime = 0;
-            MovingTime = 0;
-            CollectedCrates = 0;
+            DeliveredCrates = 0;
             IsCollidedWithMap = false;
             IsCollidedWithCrate = false;
             IsPickedCrate = false;
-            MinDistanceToCrate = 1f;
-            MinDistanceToCheckpoint = 10f;
         }
     }
 }

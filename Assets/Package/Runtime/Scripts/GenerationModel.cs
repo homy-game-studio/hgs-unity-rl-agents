@@ -16,7 +16,8 @@ namespace HGS.RLAgents
     public class GenerationModel : ScriptableObject
     {
         public string populationId = "";
-        public float mutationProbability = 0.2f;
+        public float mutationRate = 0.2f;
+        public float mutationStrength = 0.1f;
         public int crossoverPoint = 0;
         public int neuralNetworkPoint = 3;
         public GenerationModelLayer[] layers;

@@ -31,7 +31,6 @@ namespace HGS.RLAgents
             }
 
             policyWalker.onPolicyChange += SetPolicy;
-            policyWalker.Begin();
         }
 
         public void SetPolicy(Policy policy)
@@ -39,6 +38,8 @@ namespace HGS.RLAgents
             if (_policy != null) _policy.TransitionOut();
             _policy = policy;
             _policy.TransitionIn();
+
+            academy.MaxGenerationDuration = _policy.maxGenerationTime;
         }
 
         public void CompleteEpoch()
