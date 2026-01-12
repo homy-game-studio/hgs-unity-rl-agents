@@ -37,7 +37,7 @@ namespace HGS.RLAgents.Evolution
                 population.Value.Crossover();
                 population.Value.Mutate();
                 population.Value.Replace();
-                Debug.Log($"{generation}/{maxGenerations} - Population: {population.Key}, Reward: {population.Value.BestReward}");
+                Debug.Log($"{generation}/{maxGenerations} - Population: {population.Key}, AvgReward: {population.Value.AverageBestReward}");
             }
         }
     }
