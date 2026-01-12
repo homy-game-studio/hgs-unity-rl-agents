@@ -24,7 +24,7 @@ namespace HGS.RLAgents.Evolution
             genes[index] = UnityEngine.Random.Range(-1f, 1f);
         }
 
-        public void Mutate(float rate, float strength)
+        public void Mutate(float rate, float resetRate, float strength)
         {
             var size = genes.Length;
 
@@ -32,8 +32,11 @@ namespace HGS.RLAgents.Evolution
             {
                 if (UnityEngine.Random.Range(0f, 1f) < rate)
                 {
-                    //genes[i] = Mathf.Clamp(genes[i] + UnityEngine.Random.Range(-strength, strength), 0f, 1f);
                     genes[i] = genes[i] + UnityEngine.Random.Range(-strength, strength);
+                }
+                if (UnityEngine.Random.Range(0f, 1f) < resetRate)
+                {
+                    genes[i] = UnityEngine.Random.Range(-1f, 1f);
                 }
             }
         }

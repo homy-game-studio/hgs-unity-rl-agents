@@ -46,7 +46,7 @@ namespace HGS.RLAgents.StackerSample
 
         public Action onCollideWithMapEvt;
         public Action onCollideWithCrateEvt;
-        public Action onPickCrateEvt;
+        public Action<Transform> onPickCrateEvt;
         public Action onDeliveryCrateEvt;
 
         private Transform _holdItem;
@@ -113,7 +113,7 @@ namespace HGS.RLAgents.StackerSample
                 _holdItem.localRotation = Quaternion.identity;
                 PickedCrateCount++;
                 AvgTimeToPickCrate = TimeWithoutCrate / PickedCrateCount;
-                onPickCrateEvt?.Invoke();
+                onPickCrateEvt?.Invoke(_holdItem);
             }
         }
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace HGS.RLAgents.Evolution
 {
@@ -11,10 +12,12 @@ namespace HGS.RLAgents.Evolution
 
         int _crossoverPoint;
         float _mutationRate;
+        float _mutationResetRate;
         float _mutationStrength;
-        float _bestReward;
 
-        public float BestReward => _bestReward;
+        private List<Agent> _bestAgents = new List<Agent>();
+
+        public float AverageBestReward => _bestAgents.Average(a => a.reward);
 
         public void Initialize()
         {
@@ -36,29 +39,39 @@ namespace HGS.RLAgents.Evolution
         {
             _cromossomes.Clear();
 
-            var _bestAgents = _agents
+            int populationSize = _agents.Count;
+            int eliteCount = Mathf.Max(2, Mathf.CeilToInt(populationSize * 0.1f));
+
+            var bestAgents = _agents
                 .OrderByDescending(agent => agent.reward)
-                .Take(2)
+                .Take(eliteCount)
                 .ToList();
 
-            _crossoverPoint = _bestAgents[0].model.crossoverPoint;
-            _mutationRate = _bestAgents[0].model.mutationRate;
-            _mutationStrength = _bestAgents[0].model.mutationStrength;
-            _bestReward = _bestAgents[0].reward;
+            var best = bestAgents[0];
 
-            _bestCromossomes = _bestAgents
+            _crossoverPoint = best.model.crossoverPoint;
+            _mutationRate = best.model.mutationRate;
+            _mutationResetRate = best.model.mutationResetRate;
+            _mutationStrength = best.model.mutationStrength;
+            _bestAgents = bestAgents;
+
+            _bestCromossomes = bestAgents
                 .Select(agent => (Cromossome)agent.cromossome.Clone())
                 .ToList();
         }
 
         public void Crossover()
         {
-            var populationSize = _agents.Count();
-            var parentA = _bestCromossomes[0];
-            var parentB = _bestCromossomes[1];
+            int populationSize = _agents.Count;
+            int eliteCount = _bestCromossomes.Count;
 
-            for (var i = 0; i < populationSize; i++)
+            for (int i = 0; i < populationSize; i++)
             {
+                var parentA = _bestCromossomes[Random.Range(0, eliteCount)];
+                var parentB = _bestCromossomes[Random.Range(0, eliteCount)];
+
+                int point = Random.Range(0, parentA.genes.Length);
+
                 var cromossome = Cromossome.Crossover(parentA, parentB, _crossoverPoint);
                 _cromossomes.Add(cromossome);
             }
@@ -70,7 +83,7 @@ namespace HGS.RLAgents.Evolution
 
             for (var i = 0; i < populationSize; i++)
             {
-                _cromossomes[i].Mutate(_mutationRate, _mutationStrength);
+                _cromossomes[i].Mutate(_mutationRate, _mutationResetRate, _mutationStrength);
             }
         }
 
@@ -78,10 +91,7 @@ namespace HGS.RLAgents.Evolution
         {
             var populationSize = _agents.Count();
 
-            _agents[0].SetCromossome(_bestCromossomes[0]);
-            _agents[1].SetCromossome(_bestCromossomes[1]);
-
-            for (var i = 2; i < populationSize; i++)
+            for (var i = 0; i < populationSize; i++)
             {
                 _agents[i].SetCromossome(_cromossomes[i]);
             }
