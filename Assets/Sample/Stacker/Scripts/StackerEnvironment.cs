@@ -14,13 +14,13 @@ namespace HGS.RLAgents.StackerSample
         public List<Transform> crates;
 
         List<Pose> _initialCratePoses;
-        Vector2 _initialAgentPosition;
+
+        public int CrateCount => crates.Count;
 
         protected override void Awake()
         {
             base.Awake();
 
-            _initialAgentPosition = agent.transform.position;
             _initialCratePoses = crates
                 .Select(crate => new Pose(crate.position, crate.rotation))
                 .ToList();

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: StackerModel
   m_EditorClassIdentifier: 
   populationId: stacker
-  mutationRate: 0.25
-  mutationResetRate: 0.001
-  mutationStrength: 0.25
+  mutationRate: 0.02
+  mutationResetRate: 0.0001
+  mutationStrength: 0.5
   crossoverPoint: 0
   neuralNetworkPoint: 0
   layers:
@@ -25,4 +25,4 @@ MonoBehaviour:
     activation: 1
   - size: 3
     activation: 1
-  inputSize: 15
+  inputSize: 29

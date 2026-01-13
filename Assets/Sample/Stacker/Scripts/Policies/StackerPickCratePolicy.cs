@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -49,6 +50,10 @@ namespace HGS.RLAgents.StackerSample
         {
             Agent.Drop();
             crate.gameObject.SetActive(false);
+            if (env.agent.PickedCrateCount >= env.CrateCount)
+            {
+                env.CompleteEpoch();
+            }
         }
     }
 }

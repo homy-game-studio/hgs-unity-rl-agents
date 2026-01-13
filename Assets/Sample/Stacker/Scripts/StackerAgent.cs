@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using HGS.RLAgents.Sensors;
 using UnityEngine;
@@ -41,12 +42,13 @@ namespace HGS.RLAgents.StackerSample
         public float Steering { get; private set; } = 0;
         public bool IsCollidedWithMap { get; private set; } = false;
         public bool IsPickedCrate { get; private set; } = false;
-        public bool IsCollidedWithCrate { get; private set; } = false;
+        public int CollisionWithCrateCount { get; private set; } = 0;
         public bool IsHoldingCrate => _holdItem != null;
 
         public Action onCollideWithMapEvt;
         public Action onCollideWithCrateEvt;
         public Action<Transform> onPickCrateEvt;
+        public Action onDropCrateEvt;
         public Action onDeliveryCrateEvt;
 
         private Transform _holdItem;
@@ -66,19 +68,40 @@ namespace HGS.RLAgents.StackerSample
 
             return new float[] {
                 sensorInput[0].distance,
-                sensorInput[0].tagIndex,
+                sensorInput[0].tags[0],
+                sensorInput[0].tags[1],
+                sensorInput[0].tags[2],
+
                 sensorInput[1].distance,
-                sensorInput[1].tagIndex,
+                sensorInput[1].tags[0],
+                sensorInput[1].tags[1],
+                sensorInput[1].tags[2],
+
                 sensorInput[2].distance,
-                sensorInput[2].tagIndex,
+                sensorInput[2].tags[0],
+                sensorInput[2].tags[1],
+                sensorInput[2].tags[2],
+
                 sensorInput[3].distance,
-                sensorInput[3].tagIndex,
+                sensorInput[3].tags[0],
+                sensorInput[3].tags[1],
+                sensorInput[3].tags[2],
+
                 sensorInput[4].distance,
-                sensorInput[4].tagIndex,
+                sensorInput[4].tags[0],
+                sensorInput[4].tags[1],
+                sensorInput[4].tags[2],
+
                 sensorInput[5].distance,
-                sensorInput[5].tagIndex,
+                sensorInput[5].tags[0],
+                sensorInput[5].tags[1],
+                sensorInput[5].tags[2],
+
                 sensorInput[6].distance,
-                sensorInput[6].tagIndex,
+                sensorInput[6].tags[0],
+                sensorInput[6].tags[1],
+                sensorInput[6].tags[2],
+
                 IsHoldingCrate ? 1f : 0f
             };
         }
@@ -123,13 +146,13 @@ namespace HGS.RLAgents.StackerSample
 
             _holdItem.gameObject.SetActive(false);
 
-            Drop();
+            Drop(false);
 
             DeliveredCrates++;
             onDeliveryCrateEvt?.Invoke();
         }
 
-        public void Drop()
+        public void Drop(bool raiseEvent = true)
         {
             if (!IsHoldingCrate) return;
 
@@ -139,6 +162,8 @@ namespace HGS.RLAgents.StackerSample
             _holdItem.SetParent(null);
             _holdItem = null;
             FindNearestCrate();
+
+            if (raiseEvent) onDropCrateEvt?.Invoke();
         }
 
         protected override void Update()
@@ -211,7 +236,7 @@ namespace HGS.RLAgents.StackerSample
 
             if (collision.gameObject.CompareTag("Pickable"))
             {
-                IsCollidedWithCrate = true;
+                CollisionWithCrateCount++;
                 onCollideWithCrateEvt?.Invoke();
             }
         }
@@ -243,8 +268,8 @@ namespace HGS.RLAgents.StackerSample
             TimeToDeliveryCrate = 0;
             IdleTime = 0;
             DeliveredCrates = 0;
+            CollisionWithCrateCount = 0;
             IsCollidedWithMap = false;
-            IsCollidedWithCrate = false;
             IsPickedCrate = false;
         }
     }

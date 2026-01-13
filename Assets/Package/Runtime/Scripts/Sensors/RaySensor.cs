@@ -8,10 +8,13 @@ namespace HGS.RLAgents.Sensors
     public struct Raycast2DSensorInfo
     {
         public float distance;
-        public string tag;
-        public float tagIndex;
+        public float[] tags;
         public Vector2 position;
-        public GameObject gameObject;
+
+        public void SetTag(int index, float value)
+        {
+            tags[index] = value;
+        }
 
         public bool IsTouched => distance < 1;
     }
@@ -30,25 +33,25 @@ namespace HGS.RLAgents.Sensors
         Vector2[] _directions;
         Raycast2DSensorInfo[] _infos;
 
-        public Raycast2DSensorInfo[] Infos
-        {
-            private set { _infos = value; }
-            get
-            {
-                if (_infos == null)
-                {
-                    _infos = new Raycast2DSensorInfo[sensorCount];
-                }
-                return _infos;
-            }
-        }
+        public Raycast2DSensorInfo[] Infos => _infos;
 
         void Awake()
         {
+            _infos = CreateInfos();
             _directions = CreateDirections();
         }
 
-        public Vector2[] CreateDirections()
+        private Raycast2DSensorInfo[] CreateInfos()
+        {
+            var infos = new Raycast2DSensorInfo[sensorCount];
+            for (int i = 0; i < sensorCount; i++)
+            {
+                infos[i].tags = new float[tagList.Count];
+            }
+            return infos;
+        }
+
+        private Vector2[] CreateDirections()
         {
             var directions = new Vector2[sensorCount];
             var angleStep = sensorAngle / (sensorCount - 1);
@@ -64,16 +67,24 @@ namespace HGS.RLAgents.Sensors
             return directions;
         }
 
-        public void ExecuteRay(Vector2 direction, out Raycast2DSensorInfo info)
+        public void ExecuteRay(Vector2 direction, ref Raycast2DSensorInfo info)
         {
             var dir = transform.TransformDirection(direction);
             var hit = Physics2D.Raycast(transform.position, dir, sensorLength, detectionLayer);
 
             info.distance = hit.collider != null ? hit.distance / sensorLength : 1f;
-            info.tag = hit.collider != null ? hit.collider.tag : "";
-            info.tagIndex = hit.collider != null ? tagList.IndexOf(hit.collider.tag) : -1f;
+            for (int i = 0; i < tagList.Count; i++)
+            {
+                if (hit.collider != null && hit.collider.CompareTag(tagList[i]))
+                {
+                    info.tags[i] = 1f;
+                }
+                else
+                {
+                    info.tags[i] = 0f;
+                }
+            }
             info.position = hit.point;
-            info.gameObject = hit.collider?.gameObject;
         }
 
         void FixedUpdate()
@@ -82,7 +93,7 @@ namespace HGS.RLAgents.Sensors
 
             for (int i = 0; i < _directions.Length; i++)
             {
-                ExecuteRay(_directions[i], out Infos[i]);
+                ExecuteRay(_directions[i], ref _infos[i]);
             }
         }
 
@@ -90,20 +101,20 @@ namespace HGS.RLAgents.Sensors
         {
             if (!showGizmos) return;
 
+            var infos = CreateInfos();
             var directions = CreateDirections();
 
             for (int i = 0; i < directions.Length; i++)
             {
-                Raycast2DSensorInfo info;
-                ExecuteRay(directions[i], out info);
+                ExecuteRay(directions[i], ref infos[i]);
 
                 var dir = transform.TransformDirection(directions[i]);
-                var distance = info.distance * sensorLength;
+                var distance = infos[i].distance * sensorLength;
 
-                if (info.IsTouched)
+                if (infos[i].IsTouched)
                 {
                     Gizmos.color = Color.green;
-                    Gizmos.DrawWireSphere(info.position, 0.1f);
+                    Gizmos.DrawWireSphere(infos[i].position, 0.1f);
                 }
                 else
                 {
