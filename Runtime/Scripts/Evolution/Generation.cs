@@ -34,6 +34,7 @@ namespace HGS.RLAgents.Evolution
             foreach (var population in populations)
             {
                 population.Value.Select();
+                population.Value.SaveProgress();
                 population.Value.Crossover();
                 population.Value.Mutate();
                 population.Value.Replace();

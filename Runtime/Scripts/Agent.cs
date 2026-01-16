@@ -9,6 +9,7 @@ namespace HGS.RLAgents
         [Header("Evolution")]
         public Cromossome cromossome;
         public Model model;
+        public bool loadCromossomeOnAwake= false;
 
         [Header("Evaluation")]
         public float evaluateInterval = 0.15f;
@@ -29,6 +30,11 @@ namespace HGS.RLAgents
         protected virtual void Awake()
         {
             _neuralNetwork = NeuralNetworkUtility.CreateFromModel(model);
+            if (loadCromossomeOnAwake)
+            {
+                var loadedCromossome = model.LoadCromossome();
+                SetCromossome(loadedCromossome);
+            }
         }
 
         protected abstract float[] GetInput();
