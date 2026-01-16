@@ -23,6 +23,8 @@ namespace HGS.RLAgents.Evolution
         {
             foreach (var agent in _agents)
             {
+                if (agent.loadCromossomeOnAwake) continue;
+
                 var size = agent.CromossomeSize;
                 var cromossome = new Cromossome(size);
                 for (var i = 0; i < size; i++)
@@ -58,6 +60,12 @@ namespace HGS.RLAgents.Evolution
             _bestCromossomes = bestAgents
                 .Select(agent => (Cromossome)agent.cromossome.Clone())
                 .ToList();
+        }
+
+        public void SaveProgress()
+        {
+            var best = _bestAgents[0];
+            best.model.SaveCromossome(best.cromossome);
         }
 
         public void Crossover()

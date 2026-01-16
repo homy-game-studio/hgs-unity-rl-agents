@@ -1176,10 +1176,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1206937359}
     - target: {fileID: 2031389821159348715, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
-      propertyPath: maxSteeringSpeed
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 2031389821159348715, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
       propertyPath: '_crates.Array.data[0]'
       value: 
       objectReference: {fileID: 21286946}
@@ -1239,21 +1235,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8818992169105373624, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8818992169105373624, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
-      propertyPath: showGizmos
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9115185592718661272, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
       propertyPath: m_Name
       value: StackerAgent
-      objectReference: {fileID: 0}
-    - target: {fileID: 9115185592718661272, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
 using HGS.RLAgents.NeuralNetworks;
+using HGS.RLAgents.Evolution;
+using Newtonsoft.Json;
 
 namespace HGS.RLAgents
 {
@@ -36,6 +38,35 @@ namespace HGS.RLAgents
             }
 
             return count;
+        }
+
+        public void SaveCromossome(Cromossome cromossome)
+        {
+            var contents = JsonConvert.SerializeObject(cromossome);
+            // cria a pasta caso nao exista
+            if (!System.IO.Directory.Exists(Application.dataPath + "/Resources/cromossomes"))
+            {
+                System.IO.Directory.CreateDirectory(Application.dataPath + "/Resources/cromossomes");
+            }
+            System.IO.File.WriteAllText(Application.dataPath + $"/Resources/cromossomes/{populationId}.json", contents);
+            Debug.Log($"Cromossome saved for population {populationId}");
+        }
+
+        public Cromossome LoadCromossome()
+        {
+            var path = Application.dataPath + $"/Resources/cromossomes/{populationId}.json";
+            if (System.IO.File.Exists(path))
+            {
+                var contents = System.IO.File.ReadAllText(path);
+                var cromossome = JsonConvert.DeserializeObject<Cromossome>(contents);
+                Debug.Log($"Cromossome loaded for population {populationId}");
+                return cromossome;
+            }
+            else
+            {
+                Debug.LogWarning($"Cromossome file not found for population {populationId} at path: {path}");
+                return new Cromossome();
+            }
         }
     }
 }

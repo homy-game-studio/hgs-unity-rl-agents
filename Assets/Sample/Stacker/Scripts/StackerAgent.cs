@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using HGS.RLAgents.Sensors;
 using UnityEngine;
@@ -64,43 +63,41 @@ namespace HGS.RLAgents.StackerSample
 
         protected override float[] GetInput()
         {
-            var sensorInput = raySensor.Infos;
-
             return new float[] {
-                sensorInput[0].distance,
-                sensorInput[0].tags[0],
-                sensorInput[0].tags[1],
-                sensorInput[0].tags[2],
+                raySensor.Infos[0].distance,
+                raySensor.Infos[0].tags[0],
+                raySensor.Infos[0].tags[1],
+                raySensor.Infos[0].tags[2],
 
-                sensorInput[1].distance,
-                sensorInput[1].tags[0],
-                sensorInput[1].tags[1],
-                sensorInput[1].tags[2],
+                raySensor.Infos[1].distance,
+                raySensor.Infos[1].tags[0],
+                raySensor.Infos[1].tags[1],
+                raySensor.Infos[1].tags[2],
 
-                sensorInput[2].distance,
-                sensorInput[2].tags[0],
-                sensorInput[2].tags[1],
-                sensorInput[2].tags[2],
+                raySensor.Infos[2].distance,
+                raySensor.Infos[2].tags[0],
+                raySensor.Infos[2].tags[1],
+                raySensor.Infos[2].tags[2],
 
-                sensorInput[3].distance,
-                sensorInput[3].tags[0],
-                sensorInput[3].tags[1],
-                sensorInput[3].tags[2],
+                raySensor.Infos[3].distance,
+                raySensor.Infos[3].tags[0],
+                raySensor.Infos[3].tags[1],
+                raySensor.Infos[3].tags[2],
 
-                sensorInput[4].distance,
-                sensorInput[4].tags[0],
-                sensorInput[4].tags[1],
-                sensorInput[4].tags[2],
+                raySensor.Infos[4].distance,
+                raySensor.Infos[4].tags[0],
+                raySensor.Infos[4].tags[1],
+                raySensor.Infos[4].tags[2],
 
-                sensorInput[5].distance,
-                sensorInput[5].tags[0],
-                sensorInput[5].tags[1],
-                sensorInput[5].tags[2],
+                raySensor.Infos[5].distance,
+                raySensor.Infos[5].tags[0],
+                raySensor.Infos[5].tags[1],
+                raySensor.Infos[5].tags[2],
 
-                sensorInput[6].distance,
-                sensorInput[6].tags[0],
-                sensorInput[6].tags[1],
-                sensorInput[6].tags[2],
+                raySensor.Infos[6].distance,
+                raySensor.Infos[6].tags[0],
+                raySensor.Infos[6].tags[1],
+                raySensor.Infos[6].tags[2],
 
                 IsHoldingCrate ? 1f : 0f
             };

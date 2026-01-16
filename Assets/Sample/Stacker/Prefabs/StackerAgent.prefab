@@ -426,6 +426,7 @@ MonoBehaviour:
   cromossome:
     genes: []
   model: {fileID: 11400000, guid: 62d963d5c864fe348aafeed9d4e60ca7, type: 2}
+  loadCromossomeOnAwake: 1
   evaluateInterval: 0.25
   active: 0
   reward: 0
@@ -438,7 +439,7 @@ MonoBehaviour:
   raySensor: {fileID: 8818992169105373624}
   myRigidbody2D: {fileID: 7568093449102375622}
   maxSpeed: 5
-  maxSteeringSpeed: 90
+  maxSteeringSpeed: 180
   checkpoint: {fileID: 0}
   _crates:
   - {fileID: 0}
