@@ -65,9 +65,6 @@ namespace HGS.RLAgents.StackerSample
         {
             return new float[] {
                 raySensor.Infos[0].distance,
-                raySensor.Infos[0].tags[0],
-                raySensor.Infos[0].tags[1],
-                raySensor.Infos[0].tags[2],
 
                 raySensor.Infos[1].distance,
                 raySensor.Infos[1].tags[0],
@@ -75,29 +72,6 @@ namespace HGS.RLAgents.StackerSample
                 raySensor.Infos[1].tags[2],
 
                 raySensor.Infos[2].distance,
-                raySensor.Infos[2].tags[0],
-                raySensor.Infos[2].tags[1],
-                raySensor.Infos[2].tags[2],
-
-                raySensor.Infos[3].distance,
-                raySensor.Infos[3].tags[0],
-                raySensor.Infos[3].tags[1],
-                raySensor.Infos[3].tags[2],
-
-                raySensor.Infos[4].distance,
-                raySensor.Infos[4].tags[0],
-                raySensor.Infos[4].tags[1],
-                raySensor.Infos[4].tags[2],
-
-                raySensor.Infos[5].distance,
-                raySensor.Infos[5].tags[0],
-                raySensor.Infos[5].tags[1],
-                raySensor.Infos[5].tags[2],
-
-                raySensor.Infos[6].distance,
-                raySensor.Infos[6].tags[0],
-                raySensor.Infos[6].tags[1],
-                raySensor.Infos[6].tags[2],
 
                 IsHoldingCrate ? 1f : 0f
             };
