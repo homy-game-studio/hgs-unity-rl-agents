@@ -9,6 +9,8 @@ namespace HGS.RLAgents.Evolution
     {
         private Dictionary<string, Population> populations = new Dictionary<string, Population>();
 
+        private float _progress = 0;
+
         public void AddAgent(Agent agent)
         {
             var populationId = agent.model.populationId;
@@ -31,12 +33,14 @@ namespace HGS.RLAgents.Evolution
 
         public void Tick(int generation, int maxGenerations)
         {
+            _progress = (float)generation / maxGenerations;
+
             foreach (var population in populations)
             {
                 population.Value.Select();
                 population.Value.SaveProgress();
                 population.Value.Crossover();
-                population.Value.Mutate();
+                population.Value.Mutate(1f - _progress);
                 population.Value.Replace();
                 Debug.Log($"{generation}/{maxGenerations} - Population: {population.Key}, AvgReward: {population.Value.AverageBestReward}");
             }
