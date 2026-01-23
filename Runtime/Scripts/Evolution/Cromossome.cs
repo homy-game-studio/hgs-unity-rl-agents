@@ -32,7 +32,7 @@ namespace HGS.RLAgents.Evolution
             {
                 if (UnityEngine.Random.Range(0f, 1f) < rate)
                 {
-                    genes[i] = genes[i] + UnityEngine.Random.Range(-strength, strength);
+                    genes[i] += Mathf.Sign(UnityEngine.Random.Range(-1f, 1f)) * strength;
                 }
                 if (UnityEngine.Random.Range(0f, 1f) < resetRate)
                 {
