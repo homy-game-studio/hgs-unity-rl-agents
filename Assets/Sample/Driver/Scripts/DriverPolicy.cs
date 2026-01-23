@@ -6,7 +6,6 @@ namespace HGS.RLAgents.DriverSample
     {
         [SerializeField] Environment env;
         [SerializeField] DriverAgent agent;
-        [SerializeField] int maxEvaluations = 200;
 
         void Awake()
         {
@@ -22,7 +21,7 @@ namespace HGS.RLAgents.DriverSample
             float reward = 0;
 
             reward += agent.Checkpoints.Count;
-            reward -= (float)agent.evaluationCount / (float)maxEvaluations;
+            reward -= 0.01f * agent.evaluationCount;
 
             if (agent.IsCollidedWithMap)
             {

@@ -57,6 +57,7 @@ MonoBehaviour:
   cromossome:
     genes: []
   model: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
+  loadCromossomeOnAwake: 0
   evaluateInterval: 0.15
   active: 0
   reward: 0
@@ -78,14 +79,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 646a8148265366348ba591299dc877ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensorLength: 10
+  sensorLength: 20
   sensorCount: 8
-  sensorStartAngle: -90
-  sensorAngle: 180
+  sensorStartAngle: -45
+  sensorAngle: 90
   detectionLayer:
     serializedVersion: 2
     m_Bits: 128
-  showGizmos: 1
+  showGizmos: 0
   tagList: []
 --- !u!61 &5948937327535034678
 BoxCollider2D:

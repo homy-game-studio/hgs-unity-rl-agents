@@ -149,11 +149,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _runner:
-    maxGenerations: 1000
+    maxGenerations: 100
     maxGenerationDuration: 10
   _environmentReplication:
     environmentGo: {fileID: 998542374}
-    numberOfInstances: 200
+    numberOfInstances: 100
     size: 0
   timescale: 1
 --- !u!4 &145261320
@@ -2071,7 +2071,6 @@ MonoBehaviour:
   maxGenerationTime: 10
   env: {fileID: 998542376}
   agent: {fileID: 1927563459}
-  maxEvaluations: 200
 --- !u!1 &1116981028
 GameObject:
   m_ObjectHideFlags: 0
@@ -3865,18 +3864,6 @@ PrefabInstance:
     - target: {fileID: 5823978168014669514, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6188028244689823595, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
-      propertyPath: sensorAngle
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 6188028244689823595, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
-      propertyPath: sensorLength
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6188028244689823595, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
-      propertyPath: sensorStartAngle
-      value: -45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
