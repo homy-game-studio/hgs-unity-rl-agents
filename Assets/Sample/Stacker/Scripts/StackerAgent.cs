@@ -41,7 +41,7 @@ namespace HGS.RLAgents.StackerSample
         public float Steering { get; private set; } = 0;
         public bool IsCollidedWithMap { get; private set; } = false;
         public bool IsPickedCrate { get; private set; } = false;
-        public int CollisionWithCrateCount { get; private set; } = 0;
+        public int CollisionCount { get; private set; } = 0;
         public bool IsHoldingCrate => _holdItem != null;
 
         public Action onCollideWithMapEvt;
@@ -65,6 +65,9 @@ namespace HGS.RLAgents.StackerSample
         {
             return new float[] {
                 raySensor.Infos[0].distance,
+                raySensor.Infos[0].tags[0],
+                raySensor.Infos[0].tags[1],
+                raySensor.Infos[0].tags[2],
 
                 raySensor.Infos[1].distance,
                 raySensor.Infos[1].tags[0],
@@ -72,6 +75,9 @@ namespace HGS.RLAgents.StackerSample
                 raySensor.Infos[1].tags[2],
 
                 raySensor.Infos[2].distance,
+                raySensor.Infos[2].tags[0],
+                raySensor.Infos[2].tags[1],
+                raySensor.Infos[2].tags[2],
 
                 IsHoldingCrate ? 1f : 0f
             };
@@ -80,7 +86,7 @@ namespace HGS.RLAgents.StackerSample
         protected override void EvaluateOutput(float[] output)
         {
             Speed = Mathf.Clamp(output[0] * maxSpeed, 0, maxSpeed);
-            Steering = output[1] * maxSteeringSpeed;
+            Steering = (output[1] - 1f) * maxSteeringSpeed;
             IsPressingHold = output[2] > 0.5f;
         }
 
@@ -199,6 +205,8 @@ namespace HGS.RLAgents.StackerSample
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            CollisionCount++;
+
             if (collision.gameObject.CompareTag("Map"))
             {
                 IsCollidedWithMap = true;
@@ -207,7 +215,6 @@ namespace HGS.RLAgents.StackerSample
 
             if (collision.gameObject.CompareTag("Pickable"))
             {
-                CollisionWithCrateCount++;
                 onCollideWithCrateEvt?.Invoke();
             }
         }
@@ -239,7 +246,7 @@ namespace HGS.RLAgents.StackerSample
             TimeToDeliveryCrate = 0;
             IdleTime = 0;
             DeliveredCrates = 0;
-            CollisionWithCrateCount = 0;
+            CollisionCount = 0;
             IsCollidedWithMap = false;
             IsPickedCrate = false;
         }

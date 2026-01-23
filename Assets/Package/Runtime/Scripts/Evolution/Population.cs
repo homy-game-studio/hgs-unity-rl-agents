@@ -41,8 +41,10 @@ namespace HGS.RLAgents.Evolution
         {
             _cromossomes.Clear();
 
+            float selectionRate = _agents[0].model.selectionRate;
+
             int populationSize = _agents.Count;
-            int eliteCount = Mathf.Max(2, Mathf.CeilToInt(populationSize * 0.1f));
+            int eliteCount = Mathf.Max(2, Mathf.CeilToInt(populationSize * selectionRate));
 
             var bestAgents = _agents
                 .OrderByDescending(agent => agent.reward)
@@ -75,6 +77,13 @@ namespace HGS.RLAgents.Evolution
 
             for (int i = 0; i < populationSize; i++)
             {
+                if (i == 0)
+                {
+                    // Keep the best cromossome
+                    _cromossomes.Add((Cromossome)_bestCromossomes[0].Clone());
+                    continue;
+                }
+
                 var parentA = _bestCromossomes[Random.Range(0, eliteCount)];
                 var parentB = _bestCromossomes[Random.Range(0, eliteCount)];
 
@@ -85,13 +94,18 @@ namespace HGS.RLAgents.Evolution
             }
         }
 
-        public void Mutate()
+        public void Mutate(float _mutationFactor)
         {
             var populationSize = _agents.Count();
 
             for (var i = 0; i < populationSize; i++)
             {
-                _cromossomes[i].Mutate(_mutationRate, _mutationResetRate, _mutationStrength);
+                if (i == 0)
+                {
+                    // Do not mutate the best cromossome
+                    continue;
+                }
+                _cromossomes[i].Mutate(_mutationRate, _mutationResetRate * _mutationFactor, _mutationStrength * _mutationFactor);
             }
         }
 
@@ -103,7 +117,6 @@ namespace HGS.RLAgents.Evolution
             {
                 _agents[i].SetCromossome(_cromossomes[i]);
             }
-
         }
     }
 }

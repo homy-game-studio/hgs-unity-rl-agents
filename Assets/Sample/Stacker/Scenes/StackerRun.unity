@@ -979,6 +979,10 @@ PrefabInstance:
       propertyPath: '_crates.Array.data[4]'
       value: 
       objectReference: {fileID: 1230044250}
+    - target: {fileID: 2031389821159348715, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
+      propertyPath: loadCromossomeOnAwake
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7963605861034895779, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.64
@@ -1021,7 +1025,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8818992169105373624, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
       propertyPath: showGizmos
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9115185592718661272, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
       propertyPath: m_Name

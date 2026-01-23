@@ -1,8 +1,10 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HGS.RLAgents.StackerSample
 {
-    public class StackerFinalPolicy : Policy
+    public class StackerGotoCheckpointPolicy : Policy
     {
         [SerializeField] StackerEnvironment env;
 
@@ -12,38 +14,42 @@ namespace HGS.RLAgents.StackerSample
         {
             var reward = 0f;
 
-            reward += 3f * Agent.DeliveredCrates;
+            // Aproximar-se
+            reward += Agent.PickedCrateCount;
 
             // Penalidades
             if (Agent.IsCollidedWithMap) reward -= 20f;
-            reward -= 0.25f * (Agent.TimeToDeliveryCrate / env.MaxEpochDuration);
-            reward -= 0.5f * Agent.CollisionCount;
+            reward -= 0.1f * (Agent.IdleTime / env.MaxEpochDuration);
+            reward = 10f - Agent.MinDistanceToCheckpoint;
 
             Agent.reward = reward;
         }
 
         public override void StartEpoch()
         {
+            base.StartEpoch();
             env.RespawnCrates();
         }
 
         public override void TransitionIn()
         {
+            Agent.onPickCrateEvt += OnAgentPickCrate;
             Agent.onCollideWithMapEvt += env.CompleteEpoch;
-            Agent.onDeliveryCrateEvt += OnAgentDeliveryCrate;
         }
 
         public override void TransitionOut()
         {
             env.RespawnCrates();
 
+            Agent.onPickCrateEvt -= OnAgentPickCrate;
             Agent.onCollideWithMapEvt -= env.CompleteEpoch;
-            Agent.onDeliveryCrateEvt -= OnAgentDeliveryCrate;
         }
 
-        private void OnAgentDeliveryCrate()
+        private void OnAgentPickCrate(Transform crate)
         {
-            if (env.agent.DeliveredCrates >= env.CrateCount)
+            Agent.Drop();
+            crate.gameObject.SetActive(false);
+            if (env.agent.PickedCrateCount >= env.CrateCount)
             {
                 env.CompleteEpoch();
             }

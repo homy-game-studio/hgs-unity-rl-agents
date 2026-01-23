@@ -16,6 +16,7 @@ namespace HGS.RLAgents
 
         public int Generations => _runner.Generations;
         public int MaxGenerations => _runner.MaxGenerations;
+
         public float MaxGenerationDuration
         {
             get => _runner.maxGenerationDuration;

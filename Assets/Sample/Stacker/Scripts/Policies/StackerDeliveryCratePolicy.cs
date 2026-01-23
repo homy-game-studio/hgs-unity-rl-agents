@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace HGS.RLAgents.StackerSample
 {
-    public class StackerFinalPolicy : Policy
+    public class StackerDeliveryCratePolicy : Policy
     {
         [SerializeField] StackerEnvironment env;
 
@@ -16,8 +16,9 @@ namespace HGS.RLAgents.StackerSample
 
             // Penalidades
             if (Agent.IsCollidedWithMap) reward -= 20f;
-            reward -= 0.25f * (Agent.TimeToDeliveryCrate / env.MaxEpochDuration);
-            reward -= 0.5f * Agent.CollisionCount;
+            reward -= 0.1f * (Agent.IdleTime / env.MaxEpochDuration);
+            reward -= 0.01f * (Agent.TimeWithoutCrate / env.MaxEpochDuration);
+            reward -= 0.1f * Agent.CollisionCount;
 
             Agent.reward = reward;
         }

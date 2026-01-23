@@ -16,6 +16,7 @@ MonoBehaviour:
   mutationRate: 0.02
   mutationResetRate: 0.01
   mutationStrength: 0.5
+  selectionRate: 0.1
   crossoverPoint: 0
   neuralNetworkPoint: 3
   layers:

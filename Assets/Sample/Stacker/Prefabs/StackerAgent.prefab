@@ -400,9 +400,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensorLength: 30
-  sensorCount: 7
-  sensorStartAngle: -22.5
-  sensorAngle: 45
+  sensorCount: 3
+  sensorStartAngle: -45
+  sensorAngle: 90
   detectionLayer:
     serializedVersion: 2
     m_Bits: 3200
@@ -426,7 +426,7 @@ MonoBehaviour:
   cromossome:
     genes: []
   model: {fileID: 11400000, guid: 62d963d5c864fe348aafeed9d4e60ca7, type: 2}
-  loadCromossomeOnAwake: 1
+  loadCromossomeOnAwake: 0
   evaluateInterval: 0.25
   active: 0
   reward: 0
