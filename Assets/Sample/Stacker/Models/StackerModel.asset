@@ -15,15 +15,17 @@ MonoBehaviour:
   populationId: stacker
   mutationRate: 0.2
   mutationResetRate: 0.01
-  mutationStrength: 0.02
-  selectionRate: 0.01
+  mutationStrength: 0.1
+  selectionRate: 0.05
   crossoverPoint: 0
   neuralNetworkPoint: 0
   layers:
-  - size: 26
+  - size: 50
     activation: 2
-  - size: 8
+  - size: 25
+    activation: 2
+  - size: 12
     activation: 2
   - size: 3
     activation: 2
-  inputSize: 13
+  inputSize: 25

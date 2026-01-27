@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _runner:
-    maxGenerations: 100
+    maxGenerations: 50
     maxGenerationDuration: 10
   _environmentReplication:
     environmentGo: {fileID: 998542374}

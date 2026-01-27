@@ -20,8 +20,7 @@ namespace HGS.RLAgents.StackerSample
             // Penalidades
             if (Agent.IsCollidedWithMap) reward -= 20f;
             reward -= 0.1f * (Agent.IdleTime / env.MaxEpochDuration);
-            reward -= 0.1f * Agent.AvgTimeToPickCrate;
-            reward -= 0.1f * (Agent.TimeWithoutCrate / env.MaxEpochDuration);
+            reward -= 0.01f * Agent.evaluationCount;
 
             Agent.reward = reward;
         }

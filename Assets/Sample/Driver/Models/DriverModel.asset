@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DriverModel
   m_EditorClassIdentifier: 
   populationId: driver
-  mutationRate: 0.02
+  mutationRate: 0.25
   mutationResetRate: 0.01
-  mutationStrength: 0.5
+  mutationStrength: 0.2
   selectionRate: 0.1
   crossoverPoint: 0
   neuralNetworkPoint: 3

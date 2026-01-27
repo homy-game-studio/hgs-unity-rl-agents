@@ -319,8 +319,6 @@ MonoBehaviour:
       policy: {fileID: 797516673}
     - startEpoch: 50
       policy: {fileID: 297710597}
-    - startEpoch: 100
-      policy: {fileID: 742924224}
   botttomLeftLimit: {fileID: 986779267}
   topRightLimit: {fileID: 719521437}
   checkpoint: {fileID: 1206937359}
@@ -375,7 +373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3949dfc4e4f6a14db0c6af7938ec2d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGenerationTime: 15
+  maxGenerationTime: 35
   env: {fileID: 256908066}
 --- !u!1 &719521436
 GameObject:
@@ -586,7 +584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fdccc46944ceeb4cbbd4d25e8545286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGenerationTime: 35
+  maxGenerationTime: 40
   env: {fileID: 256908066}
 --- !u!1 &759418117
 GameObject:
@@ -766,7 +764,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f6e3c972896454f9b152fed838fbda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGenerationTime: 5
+  maxGenerationTime: 10
   env: {fileID: 256908066}
 --- !u!1 &868625240
 GameObject:
@@ -1189,11 +1187,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _runner:
-    maxGenerations: 250
+    maxGenerations: 200
     maxGenerationDuration: 30
   _environmentReplication:
     environmentGo: {fileID: 256908063}
-    numberOfInstances: 1000
+    numberOfInstances: 800
     size: 30
   timescale: 1
 --- !u!4 &1175577339
@@ -1224,6 +1222,10 @@ PrefabInstance:
       propertyPath: checkpoint
       value: 
       objectReference: {fileID: 1206937359}
+    - target: {fileID: 2031389821159348715, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
+      propertyPath: evaluateInterval
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 2031389821159348715, guid: f4fb6bfd35cc1404eab788ab1577ab87, type: 3}
       propertyPath: '_crates.Array.data[0]'
       value: 
@@ -1319,7 +1321,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1206937359}
   - component: {fileID: 1206937361}
-  - component: {fileID: 1206937360}
+  - component: {fileID: 1206937362}
   m_Layer: 10
   m_Name: Checkpoint
   m_TagString: Checkpoint
@@ -1342,52 +1344,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 256908064}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1206937360
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1206937358}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!212 &1206937361
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1432,7 +1388,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 7482667652216324306, guid: c86492f185d9e9741bc4ac3ea60e3cdc, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: 5ad3be18aad8fe24580a6612aa5102f1, type: 3}
   m_Color: {r: 0.6784314, g: 0.48246405, b: 0.28235295, a: 0.48235294}
   m_FlipX: 0
   m_FlipY: 0
@@ -1443,6 +1399,42 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &1206937362
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206937358}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
 --- !u!1 &1230044249
 GameObject:
   m_ObjectHideFlags: 0

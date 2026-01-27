@@ -3756,6 +3756,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6188028244689823595, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
+      propertyPath: showGizmos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6188028244689823595, guid: 94f5228f3113dfa49aef2fb700041468, type: 3}
       propertyPath: sensorAngle
       value: 90
       objectReference: {fileID: 0}

@@ -63,7 +63,10 @@ namespace HGS.RLAgents.StackerSample
 
         protected override float[] GetInput()
         {
+
             return new float[] {
+                IsHoldingCrate ? 1f : 0f,
+
                 raySensor.Infos[0].distance,
                 raySensor.Infos[0].tags[0],
                 raySensor.Infos[0].tags[1],
@@ -79,7 +82,20 @@ namespace HGS.RLAgents.StackerSample
                 raySensor.Infos[2].tags[1],
                 raySensor.Infos[2].tags[2],
 
-                IsHoldingCrate ? 1f : 0f
+                raySensor.Infos[3].distance,
+                raySensor.Infos[3].tags[0],
+                raySensor.Infos[3].tags[1],
+                raySensor.Infos[3].tags[2],
+
+                raySensor.Infos[4].distance,
+                raySensor.Infos[4].tags[0],
+                raySensor.Infos[4].tags[1],
+                raySensor.Infos[4].tags[2],
+
+                raySensor.Infos[5].distance,
+                raySensor.Infos[5].tags[0],
+                raySensor.Infos[5].tags[1],
+                raySensor.Infos[5].tags[2],
             };
         }
 
@@ -125,6 +141,7 @@ namespace HGS.RLAgents.StackerSample
 
             Drop(false);
 
+
             DeliveredCrates++;
             onDeliveryCrateEvt?.Invoke();
         }
@@ -154,7 +171,7 @@ namespace HGS.RLAgents.StackerSample
 
             if (!IsPressingHold && IsHoldingCrate)
             {
-                if (Vector2.Distance(_holdItem.transform.position, checkpoint.position) <= 0.8f)
+                if (Vector2.Distance(_holdItem.transform.position, checkpoint.position) <= 1.2f)
                 {
                     Delivery();
                 }

@@ -400,13 +400,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sensorLength: 30
-  sensorCount: 3
+  sensorCount: 6
   sensorStartAngle: -45
-  sensorAngle: 90
+  sensorAngle: 100
   detectionLayer:
     serializedVersion: 2
     m_Bits: 3200
-  showGizmos: 1
+  showGizmos: 0
   tagList:
   - Map
   - Pickable
