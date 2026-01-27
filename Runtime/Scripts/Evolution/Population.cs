@@ -105,7 +105,7 @@ namespace HGS.RLAgents.Evolution
                     // Do not mutate the best cromossome
                     continue;
                 }
-                _cromossomes[i].Mutate(_mutationRate, _mutationResetRate * _mutationFactor, _mutationStrength * _mutationFactor);
+                _cromossomes[i].Mutate(_mutationRate * _mutationFactor, _mutationResetRate * _mutationFactor, _mutationStrength);
             }
         }
 
