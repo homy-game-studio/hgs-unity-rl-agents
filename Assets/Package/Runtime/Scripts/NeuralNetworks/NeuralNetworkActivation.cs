@@ -6,7 +6,9 @@ namespace HGS.RLAgents.NeuralNetworks
     {
         Sigmoid,
         Tanh,
-        ReLU
+        ReLU,
+        LeakyReLU,
+        Linear,
     }
 
     public static class NeuralNetworkActivation
@@ -18,6 +20,8 @@ namespace HGS.RLAgents.NeuralNetworks
                 case EActivation.Sigmoid: return 1f / (1f + Mathf.Exp(-x));
                 case EActivation.Tanh: return (float)System.Math.Tanh(x);
                 case EActivation.ReLU: return Mathf.Max(0f, x);
+                case EActivation.Linear: return x;
+                case EActivation.LeakyReLU: return x >= 0f ? x : 0.01f * x;
                 default: return x;
             }
         }

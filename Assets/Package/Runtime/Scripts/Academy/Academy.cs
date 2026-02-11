@@ -13,7 +13,7 @@ namespace HGS.RLAgents
         [SerializeField, Range(1f, 15f)] float timescale = 1;
 
         private List<Environment> _environments = new List<Environment>();
-
+        public Dictionary<string, List<float>> AvgRewards => _generation.AvgRewards;
         public int Generations => _runner.Generations;
         public int MaxGenerations => _runner.MaxGenerations;
 

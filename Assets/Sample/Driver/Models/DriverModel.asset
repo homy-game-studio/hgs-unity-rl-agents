@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: DriverModel
   m_EditorClassIdentifier: 
   populationId: driver
-  mutationRate: 0.25
-  mutationResetRate: 0.01
-  mutationStrength: 0.2
+  mutationMode: 1
+  mutationRate: 0.1
+  mutationStrength: 0.1
   selectionRate: 0.1
   crossoverPoint: 0
-  neuralNetworkPoint: 3
+  neuralNetworkPoint: 0
   layers:
   - size: 2
-    activation: 1
+    activation: 4
   inputSize: 8

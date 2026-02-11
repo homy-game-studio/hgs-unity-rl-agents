@@ -6,14 +6,15 @@ namespace HGS.RLAgents.Evolution
 {
     public class Population
     {
+        public List<float> AvgRewards { get; private set; } = new List<float>();
         private List<Agent> _agents = new List<Agent>();
         private List<Cromossome> _bestCromossomes = new List<Cromossome>();
         private List<Cromossome> _cromossomes = new List<Cromossome>();
 
         int _crossoverPoint;
         float _mutationRate;
-        float _mutationResetRate;
         float _mutationStrength;
+        CromossomeMutationMode _mutationMode;
 
         private List<Agent> _bestAgents = new List<Agent>();
 
@@ -29,7 +30,7 @@ namespace HGS.RLAgents.Evolution
                 var cromossome = new Cromossome(size);
                 for (var i = 0; i < size; i++)
                 {
-                    cromossome.RandomizeGene(i);
+                    cromossome.Init(i, agent.model.mutationStrength, agent.model.mutationMode);
                 }
                 agent.SetCromossome(cromossome);
             }
@@ -55,13 +56,15 @@ namespace HGS.RLAgents.Evolution
 
             _crossoverPoint = best.model.crossoverPoint;
             _mutationRate = best.model.mutationRate;
-            _mutationResetRate = best.model.mutationResetRate;
+            _mutationMode = best.model.mutationMode;
             _mutationStrength = best.model.mutationStrength;
             _bestAgents = bestAgents;
 
             _bestCromossomes = bestAgents
                 .Select(agent => (Cromossome)agent.cromossome.Clone())
                 .ToList();
+
+            AvgRewards.Add(AverageBestReward);
         }
 
         public void SaveProgress()
@@ -94,7 +97,7 @@ namespace HGS.RLAgents.Evolution
             }
         }
 
-        public void Mutate(float _mutationFactor)
+        public void Mutate()
         {
             var populationSize = _agents.Count();
 
@@ -105,7 +108,7 @@ namespace HGS.RLAgents.Evolution
                     // Do not mutate the best cromossome
                     continue;
                 }
-                _cromossomes[i].Mutate(_mutationRate * _mutationFactor, _mutationResetRate * _mutationFactor, _mutationStrength);
+                _cromossomes[i].Mutate(_mutationRate, _mutationStrength, _mutationMode);
             }
         }
 

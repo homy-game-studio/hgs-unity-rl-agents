@@ -43,19 +43,19 @@ namespace HGS.RLAgents.DriverSample
             );
         }
 
-        protected override float[] GetInput()
+        protected override float[] CollectObservations()
         {
-            var sensorInput = raySensor.Infos;
+            raySensor.Sense();
 
             return new float[] {
-                sensorInput[0].distance,
-                sensorInput[1].distance,
-                sensorInput[2].distance,
-                sensorInput[3].distance,
-                sensorInput[4].distance,
-                sensorInput[5].distance,
-                sensorInput[6].distance,
-                sensorInput[7].distance,
+                raySensor.Infos[0].distance,
+                raySensor.Infos[1].distance,
+                raySensor.Infos[2].distance,
+                raySensor.Infos[3].distance,
+                raySensor.Infos[4].distance,
+                raySensor.Infos[5].distance,
+                raySensor.Infos[6].distance,
+                raySensor.Infos[7].distance,
             };
         }
 

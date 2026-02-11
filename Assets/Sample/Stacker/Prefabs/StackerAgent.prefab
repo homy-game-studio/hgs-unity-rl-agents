@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: 44336fb27e553e9458e080d5b9e62623, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: 5ad3be18aad8fe24580a6612aa5102f1, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5764706}
   m_FlipX: 0
   m_FlipY: 0
@@ -194,7 +194,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: 44336fb27e553e9458e080d5b9e62623, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: 5ad3be18aad8fe24580a6612aa5102f1, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5764706}
   m_FlipX: 0
   m_FlipY: 0
@@ -281,7 +281,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: 44336fb27e553e9458e080d5b9e62623, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: 5ad3be18aad8fe24580a6612aa5102f1, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 0.5764706}
   m_FlipX: 0
   m_FlipY: 0
@@ -376,7 +376,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: 44336fb27e553e9458e080d5b9e62623, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: 5ad3be18aad8fe24580a6612aa5102f1, type: 3}
   m_Color: {r: 0.193762, g: 0.63522005, b: 0.2515931, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -411,6 +411,7 @@ MonoBehaviour:
   - Map
   - Pickable
   - Checkpoint
+  offset: {x: 0, y: 0, z: 0}
 --- !u!114 &2031389821159348715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,7 +428,7 @@ MonoBehaviour:
     genes: []
   model: {fileID: 11400000, guid: 62d963d5c864fe348aafeed9d4e60ca7, type: 2}
   loadCromossomeOnAwake: 0
-  evaluateInterval: 0.25
+  evaluateInterval: 0.15
   active: 0
   reward: 0
   evaluationCount: 0

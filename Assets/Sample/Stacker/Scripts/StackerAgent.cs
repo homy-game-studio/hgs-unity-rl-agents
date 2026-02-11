@@ -61,7 +61,7 @@ namespace HGS.RLAgents.StackerSample
             spriteRenderer.color = UnityEngine.Random.ColorHSV();
         }
 
-        protected override float[] GetInput()
+        protected override float[] CollectObservations()
         {
 
             return new float[] {

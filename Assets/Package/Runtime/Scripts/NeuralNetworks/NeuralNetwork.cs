@@ -7,6 +7,7 @@ namespace HGS.RLAgents.NeuralNetworks
     public class NeuralNetwork
     {
         public List<NeuralNetworkLayer> Layers { get; set; }
+        public List<List<float>> Activations { get; set; }
 
         public void AddLayer(NeuralNetworkLayer layer)
         {
@@ -50,10 +51,13 @@ namespace HGS.RLAgents.NeuralNetworks
 
         public float[] FeedForward(float[] input)
         {
+            Activations = new List<List<float>>();
+            Activations.Add(new List<float>(input));
             float[] prevLayerOutput = input;
             foreach (var layer in Layers)
             {
                 prevLayerOutput = layer.FeedForward(prevLayerOutput);
+                Activations.Add(new List<float>(prevLayerOutput));
             }
             return prevLayerOutput;
         }
