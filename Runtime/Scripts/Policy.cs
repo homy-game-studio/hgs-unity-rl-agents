@@ -5,7 +5,7 @@ namespace HGS.RLAgents
     public abstract class Policy : MonoBehaviour
     {
         public float maxGenerationTime = 10;
-        public abstract void EvaluateReward();
+        public virtual void EvaluateReward() { }
         public virtual void TransitionIn() { }
         public virtual void TransitionOut() { }
         public virtual void StartEpoch() { }

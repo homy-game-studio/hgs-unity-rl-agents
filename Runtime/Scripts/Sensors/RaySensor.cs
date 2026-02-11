@@ -29,6 +29,7 @@ namespace HGS.RLAgents.Sensors
         [SerializeField] LayerMask detectionLayer;
         [SerializeField] bool showGizmos = true;
         [SerializeField] List<string> tagList;
+        [SerializeField] Vector3 offset;
 
         Vector2[] _directions;
         Raycast2DSensorInfo[] _infos;
@@ -70,7 +71,7 @@ namespace HGS.RLAgents.Sensors
         public void ExecuteRay(Vector2 direction, ref Raycast2DSensorInfo info)
         {
             var dir = transform.TransformDirection(direction);
-            var hit = Physics2D.Raycast(transform.position, dir, sensorLength, detectionLayer);
+            var hit = Physics2D.Raycast(transform.position + transform.TransformDirection(offset), dir, sensorLength, detectionLayer);
 
             info.distance = hit.collider != null ? hit.distance / sensorLength : 1f;
             for (int i = 0; i < tagList.Count; i++)
@@ -87,10 +88,9 @@ namespace HGS.RLAgents.Sensors
             info.position = hit.point;
         }
 
-        void FixedUpdate()
-        {
-            if (!Application.isPlaying) return;
 
+        public void Sense()
+        {
             for (int i = 0; i < _directions.Length; i++)
             {
                 ExecuteRay(_directions[i], ref _infos[i]);
@@ -121,7 +121,7 @@ namespace HGS.RLAgents.Sensors
                     Gizmos.color = Color.cyan;
                 }
 
-                Gizmos.DrawRay(transform.position, dir * distance);
+                Gizmos.DrawRay(transform.position + transform.TransformDirection(offset), dir * distance);
             }
         }
     }

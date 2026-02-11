@@ -9,7 +9,19 @@ namespace HGS.RLAgents.Evolution
     {
         private Dictionary<string, Population> populations = new Dictionary<string, Population>();
 
-        private float _progress = 0;
+        // avg rewards 
+        public Dictionary<string, List<float>> AvgRewards
+        {
+            get
+            {
+                var dict = new Dictionary<string, List<float>>();
+                foreach (var population in populations)
+                {
+                    dict.Add(population.Key, population.Value.AvgRewards);
+                }
+                return dict;
+            }
+        }
 
         public void AddAgent(Agent agent)
         {
@@ -33,14 +45,12 @@ namespace HGS.RLAgents.Evolution
 
         public void Tick(int generation, int maxGenerations)
         {
-            _progress = (float)generation / maxGenerations;
-
             foreach (var population in populations)
             {
                 population.Value.Select();
                 population.Value.SaveProgress();
                 population.Value.Crossover();
-                population.Value.Mutate(1f - _progress);
+                population.Value.Mutate();
                 population.Value.Replace();
                 Debug.Log($"{generation}/{maxGenerations} - Population: {population.Key}, AvgReward: {population.Value.AverageBestReward}");
             }
