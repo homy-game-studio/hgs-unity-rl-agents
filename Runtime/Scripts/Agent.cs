@@ -26,6 +26,9 @@ namespace HGS.RLAgents
 
         private NeuralNetwork _neuralNetwork;
 
+        public float[] LastInput => _lastInput;
+        public float[] LastOutput => _lastOutput;
+
         public Action onEvaluationEnd;
 
         public int CromossomeSize => model.GetParametersCount();
@@ -57,6 +60,15 @@ namespace HGS.RLAgents
             evaluationCount++;
             EvaluateOutput(_lastOutput);
             onEvaluationEnd?.Invoke();
+        }
+
+        public void ToggleRenderer(bool value)
+        {
+            var renderes = GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < renderes.Length; i++)
+            {
+                renderes[i].enabled = value;
+            }
         }
 
         public abstract void Stop();

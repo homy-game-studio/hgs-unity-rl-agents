@@ -23,13 +23,6 @@ namespace HGS.RLAgents
             set => _runner.maxGenerationDuration = value;
         }
 
-        private void Awake()
-        {
-            Time.timeScale = timescale;
-            _environmentReplication.Spawn(transform);
-            _runner.onReachTime += FinishGeneration;
-        }
-
         private void Update()
         {
             _runner.Tick(Time.deltaTime);
@@ -37,6 +30,11 @@ namespace HGS.RLAgents
 
         private void Start()
         {
+            Time.timeScale = timescale;
+            _environmentReplication.Spawn(transform);
+            _runner.onReachTime += FinishGeneration;
+            Application.targetFrameRate = -1;
+            QualitySettings.vSyncCount = 0;
             Initialize();
             StartGeneration();
         }

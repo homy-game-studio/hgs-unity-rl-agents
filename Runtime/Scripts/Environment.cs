@@ -13,6 +13,14 @@ namespace HGS.RLAgents
         Policy _policy;
 
         List<Agent> _agents = new List<Agent>();
+        public List<Agent> Agents
+        {
+            get
+            {
+                if (_agents.Count == 0) _agents = transform.GetComponentsInChildren<Agent>().ToList();
+                return _agents;
+            }
+        }
 
         public bool IsCompleted { get; set; }
         public int Epoch => academy.Generations;
@@ -23,9 +31,7 @@ namespace HGS.RLAgents
             academy = FindAnyObjectByType<Academy>();
             academy.AddEnvironment(this);
 
-            _agents = transform.GetComponentsInChildren<Agent>().ToList();
-
-            foreach (Agent agent in _agents)
+            foreach (Agent agent in Agents)
             {
                 academy.AddAgent(agent);
             }
@@ -49,7 +55,7 @@ namespace HGS.RLAgents
             IsCompleted = true;
             academy.CompleteEnvironmentEpoch(this);
 
-            foreach (var agent in _agents)
+            foreach (var agent in Agents)
             {
                 agent.Stop();
                 agent.active = false;
@@ -62,7 +68,7 @@ namespace HGS.RLAgents
             _policy.EvaluateReward();
             _policy.FinishEpoch();
 
-            foreach (var agent in _agents)
+            foreach (var agent in Agents)
             {
                 agent.Stop();
                 agent.active = false;
@@ -73,7 +79,7 @@ namespace HGS.RLAgents
 
         public void StartEpoch()
         {
-            foreach (var agent in _agents)
+            foreach (var agent in Agents)
             {
                 agent.active = true;
                 agent.reward = 0;
@@ -85,6 +91,14 @@ namespace HGS.RLAgents
             IsCompleted = false;
             _policy.StartEpoch();
             OnStartEpoch();
+        }
+
+        public void ToggleRenderer(bool value)
+        {
+            foreach (var agent in Agents)
+            {
+                agent.ToggleRenderer(value);
+            }
         }
 
         protected virtual void OnFinishEpoch() { }
