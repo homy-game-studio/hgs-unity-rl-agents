@@ -7,18 +7,21 @@ namespace HGS.RLAgents
     public class AcademyEnvironmentReplication
     {
         [SerializeField] GameObject environmentGo;
+        [SerializeField] int numberOfRenderers = 4;
         [SerializeField] int numberOfInstances = 10;
         [SerializeField] float size = 30;
 
         public void Spawn(Transform container)
         {
-            var startPosition = environmentGo.transform.position + Vector3.right * size;
-            var startRotation = environmentGo.transform.rotation;
+            var basePosition = environmentGo.transform.position;
+            var rotation = environmentGo.transform.rotation;
 
             for (int x = 0; x < numberOfInstances; x++)
             {
-                var position = startPosition * 2 + new Vector3(x * size, startPosition.y);
-                var go = GameObject.Instantiate(environmentGo, position, startRotation, container);
+                var position = basePosition + Vector3.right * (x * size);
+                var instance = GameObject.Instantiate(environmentGo, position, rotation, container);
+                var env = instance.GetComponent<Environment>();
+                env.ToggleRenderer(x < numberOfRenderers);
             }
         }
     }

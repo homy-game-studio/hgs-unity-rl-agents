@@ -8,18 +8,15 @@ namespace HGS.RLAgents.DriverSample
 {
     public class DriverAgent : Agent
     {
-        [SerializeField] SpriteRenderer spriteRenderer;
-        [SerializeField] Rigidbody2D myRigidbody2D;
+        [SerializeField] MeshRenderer[] bodyParts;
         [SerializeField] RaySensor raySensor;
-        [SerializeField] float maxSpeed = 5f;
-        [SerializeField] float maxSteeringSpeed = 45f;
+        [SerializeField] DriverPhysics driverPhysics;
+        [SerializeField] int totalCheckpoints = 10;
 
-        Vector2 _startPosition;
-        Vector3 _startEulerAngles;
+        Vector3 _startPosition;
+        Quaternion _startRotation;
 
         public List<int> Checkpoints { get; private set; } = new List<int>();
-        public float Speed { get; private set; } = 0;
-        public float Steering { get; private set; } = 0;
         public bool IsCollidedWithMap { get; private set; } = false;
         public bool IsCompletedMap { get; private set; } = false;
 
@@ -28,19 +25,23 @@ namespace HGS.RLAgents.DriverSample
 
         protected override void Awake()
         {
-            base.Awake();
             _startPosition = transform.position;
-            _startEulerAngles = transform.eulerAngles;
+            _startRotation = transform.rotation;
+            base.Awake();
         }
 
         public override void SetCromossome(Cromossome cromossome)
         {
             base.SetCromossome(cromossome);
-            spriteRenderer.color = new Color(
+            var color = new Color(
                 (cromossome.GetGene(0) + 1f) / 2f,
                 (cromossome.GetGene(1) + 1f) / 2f,
                 (cromossome.GetGene(2) + 1f) / 2f
             );
+            for (int i = 0; i < bodyParts.Length; i++)
+            {
+                bodyParts[i].material.color = color;
+            }
         }
 
         protected override float[] CollectObservations()
@@ -53,27 +54,27 @@ namespace HGS.RLAgents.DriverSample
                 raySensor.Infos[2].distance,
                 raySensor.Infos[3].distance,
                 raySensor.Infos[4].distance,
-                raySensor.Infos[5].distance,
-                raySensor.Infos[6].distance,
-                raySensor.Infos[7].distance,
+                driverPhysics.ForwardVelocity
             };
         }
 
         protected override void EvaluateOutput(float[] output)
         {
-            Speed = Mathf.Clamp(output[0] * maxSpeed, 0, maxSpeed);
-            Steering = output[1] * maxSteeringSpeed;
+            if (output[0] > 0)
+            {
+                driverPhysics.aceleration = output[0];
+                driverPhysics.breaking = 0;
+            }
+            else
+            {
+                driverPhysics.aceleration = 0;
+                driverPhysics.breaking = output[0] * -1f;
+            }
+
+            driverPhysics.steer = output[1];
         }
 
-        protected void FixedUpdate()
-        {
-            if (!active) return;
-
-            myRigidbody2D.linearVelocity = transform.right * Speed;
-            myRigidbody2D.MoveRotation(myRigidbody2D.rotation + Steering * Time.fixedDeltaTime);
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
+        private void OnCollisionEnter(Collision collision)
         {
             if (!collision.gameObject.CompareTag("Map")) return;
 
@@ -88,7 +89,7 @@ namespace HGS.RLAgents.DriverSample
 
             Checkpoints.Add(checkpoint);
 
-            if (Checkpoints.Count == 14)
+            if (Checkpoints.Count == totalCheckpoints)
             {
                 Stop();
                 IsCompletedMap = true;
@@ -96,7 +97,7 @@ namespace HGS.RLAgents.DriverSample
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerEnter(Collider collision)
         {
             if (collision.gameObject.CompareTag("Checkpoint"))
             {
@@ -108,17 +109,17 @@ namespace HGS.RLAgents.DriverSample
 
         public override void Stop()
         {
-            myRigidbody2D.linearVelocity = Vector2.zero;
-            myRigidbody2D.rotation = 0;
-            Speed = 0;
-            Steering = 0;
+            driverPhysics.Stop();
         }
 
         public override void Respawn()
         {
             Stop();
+            driverPhysics.aceleration = 0;
+            driverPhysics.breaking = 0;
+            driverPhysics.steer = 0;
             transform.position = _startPosition;
-            transform.eulerAngles = _startEulerAngles;
+            transform.rotation = _startRotation;
             IsCompletedMap = false;
             IsCollidedWithMap = false;
             Checkpoints.Clear();

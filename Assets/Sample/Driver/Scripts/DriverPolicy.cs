@@ -19,18 +19,19 @@ namespace HGS.RLAgents.DriverSample
         public override void EvaluateReward()
         {
             float reward = 0;
+            float maxEvaluations = env.MaxEpochDuration / agent.evaluateInterval;
 
             reward += agent.Checkpoints.Count;
-            reward -= 0.01f * agent.evaluationCount;
+            reward -= 0.1f * (agent.evaluationCount / maxEvaluations);
 
             if (agent.IsCollidedWithMap)
             {
-                reward -= 1f;
+                reward -= 5f;
             }
 
             if (agent.IsCompletedMap)
             {
-                reward += 1;
+                reward += 4;
             }
 
             agent.reward = reward;

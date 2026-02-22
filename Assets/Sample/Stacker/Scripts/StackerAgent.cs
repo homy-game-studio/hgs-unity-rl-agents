@@ -14,7 +14,7 @@ namespace HGS.RLAgents.StackerSample
         [Header("Styling")]
         [SerializeField] SpriteRenderer spriteRenderer;
         [Header("Sensors")]
-        [SerializeField] RaySensor raySensor;
+        [SerializeField] RaySensor2D raySensor;
         [Header("Control")]
         [SerializeField] Rigidbody2D myRigidbody2D;
         [SerializeField] float maxSpeed = 5f;

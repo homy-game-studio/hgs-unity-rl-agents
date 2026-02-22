@@ -5,22 +5,22 @@ using UnityEngine;
 namespace HGS.RLAgents.Sensors
 {
     [Serializable]
-    public struct RaycastSensorInfo
+    public struct Raycast2DSensorInfo
     {
         public float distance;
         public float[] tags;
-        public Vector3 position;
+        public Vector2 position;
 
         public void SetTag(int index, float value)
         {
             tags[index] = value;
         }
 
-        public bool IsTouched => distance < 1f;
+        public bool IsTouched => distance < 1;
     }
 
     [ExecuteInEditMode]
-    public class RaySensor : MonoBehaviour
+    public class RaySensor2D : MonoBehaviour
     {
         [SerializeField] float sensorLength = 5f;
         [SerializeField] int sensorCount = 4;
@@ -31,10 +31,10 @@ namespace HGS.RLAgents.Sensors
         [SerializeField] List<string> tagList;
         [SerializeField] Vector3 offset;
 
-        Vector3[] _directions;
-        RaycastSensorInfo[] _infos;
+        Vector2[] _directions;
+        Raycast2DSensorInfo[] _infos;
 
-        public RaycastSensorInfo[] Infos => _infos;
+        public Raycast2DSensorInfo[] Infos => _infos;
 
         void Awake()
         {
@@ -42,56 +42,50 @@ namespace HGS.RLAgents.Sensors
             _directions = CreateDirections();
         }
 
-        private RaycastSensorInfo[] CreateInfos()
+        private Raycast2DSensorInfo[] CreateInfos()
         {
-            var infos = new RaycastSensorInfo[sensorCount];
+            var infos = new Raycast2DSensorInfo[sensorCount];
             for (int i = 0; i < sensorCount; i++)
             {
-                infos[i].tags = new float[tagList?.Count ?? 0];
+                infos[i].tags = new float[tagList.Count];
             }
             return infos;
         }
 
-        private Vector3[] CreateDirections()
+        private Vector2[] CreateDirections()
         {
-            var directions = new Vector3[sensorCount];
-            float angleStep = sensorAngle / (sensorCount - 1);
+            var directions = new Vector2[sensorCount];
+            var angleStep = sensorAngle / (sensorCount - 1);
 
             for (int i = 0; i < sensorCount; i++)
             {
-                float angle = sensorStartAngle + angleStep * i;
-                float rad = angle * Mathf.Deg2Rad;
-
-                // Direção no plano XZ
-                float x = Mathf.Sin(rad);
-                float z = Mathf.Cos(rad);
-                directions[i] = new Vector3(x, 0f, z); // y = 0 para plano horizontal
+                float angle = angleStep * i;
+                float x = Mathf.Cos((sensorStartAngle + angle) * Mathf.Deg2Rad);
+                float y = Mathf.Sin((sensorStartAngle + angle) * Mathf.Deg2Rad);
+                directions[i] = new Vector2(x, y);
             }
 
             return directions;
         }
 
-        public void ExecuteRay(Vector3 direction, ref RaycastSensorInfo info)
+        public void ExecuteRay(Vector2 direction, ref Raycast2DSensorInfo info)
         {
-            var origin = transform.position + transform.TransformDirection(offset);
             var dir = transform.TransformDirection(direction);
+            var hit = Physics2D.Raycast(transform.position + transform.TransformDirection(offset), dir, sensorLength, detectionLayer);
 
-            if (Physics.Raycast(origin, dir, out RaycastHit hit, sensorLength, detectionLayer))
+            info.distance = hit.collider != null ? hit.distance / sensorLength : 1f;
+            for (int i = 0; i < tagList.Count; i++)
             {
-                info.distance = hit.distance / sensorLength;
-                info.position = hit.point;
-
-                for (int i = 0; i < tagList.Count; i++)
-                    info.tags[i] = hit.collider.CompareTag(tagList[i]) ? 1f : 0f;
-            }
-            else
-            {
-                info.distance = 1f;
-                info.position = origin + dir * sensorLength;
-
-                for (int i = 0; i < tagList.Count; i++)
+                if (hit.collider != null && hit.collider.tag == tagList[i])
+                {
+                    info.tags[i] = 1f;
+                }
+                else
+                {
                     info.tags[i] = 0f;
+                }
             }
+            info.position = hit.point;
         }
 
         public void Sense()
@@ -113,15 +107,20 @@ namespace HGS.RLAgents.Sensors
             {
                 ExecuteRay(directions[i], ref infos[i]);
 
-                var origin = transform.position + transform.TransformDirection(offset);
                 var dir = transform.TransformDirection(directions[i]);
                 var distance = infos[i].distance * sensorLength;
 
-                Gizmos.color = infos[i].IsTouched ? Color.green : Color.cyan;
-                Gizmos.DrawRay(origin, dir * distance);
-
                 if (infos[i].IsTouched)
+                {
+                    Gizmos.color = Color.green;
                     Gizmos.DrawWireSphere(infos[i].position, 0.1f);
+                }
+                else
+                {
+                    Gizmos.color = Color.cyan;
+                }
+
+                Gizmos.DrawRay(transform.position + transform.TransformDirection(offset), dir * distance);
             }
         }
     }

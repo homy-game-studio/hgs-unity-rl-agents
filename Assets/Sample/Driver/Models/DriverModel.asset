@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   populationId: driver
   mutationMode: 1
-  mutationRate: 0.1
-  mutationStrength: 0.1
+  mutationRate: 0.2
+  mutationStrength: 0.5
   selectionRate: 0.1
   crossoverPoint: 0
   neuralNetworkPoint: 0
   layers:
   - size: 2
-    activation: 4
-  inputSize: 8
+    activation: 1
+  inputSize: 6

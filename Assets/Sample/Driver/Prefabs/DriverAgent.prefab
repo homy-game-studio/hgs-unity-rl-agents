@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5823978168014669514}
   - component: {fileID: 3257548453163680185}
-  - component: {fileID: 6188028244689823595}
   - component: {fileID: 5948937327535034678}
   - component: {fileID: 171391576613290567}
   - component: {fileID: 233637658491896764}
+  - component: {fileID: 4146378583940686536}
   m_Layer: 6
   m_Name: DriverAgent
   m_TagString: Car
@@ -64,31 +64,9 @@ MonoBehaviour:
   evaluationCount: 0
   spriteRenderer: {fileID: 4430520826720084246}
   myRigidbody2D: {fileID: 233637658491896764}
-  raySensor: {fileID: 6188028244689823595}
+  raySensor: {fileID: 4146378583940686536}
   maxSpeed: 10
   maxSteeringSpeed: 180
---- !u!114 &6188028244689823595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195770753688060811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 646a8148265366348ba591299dc877ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sensorLength: 20
-  sensorCount: 8
-  sensorStartAngle: -45
-  sensorAngle: 90
-  detectionLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  showGizmos: 0
-  tagList: []
-  offset: {x: 0, y: 0, z: 0}
 --- !u!61 &5948937327535034678
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -174,6 +152,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4146378583940686536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195770753688060811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde184dfb691cb9449d05e145f30df6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensorLength: 20
+  sensorCount: 8
+  sensorStartAngle: -45
+  sensorAngle: 90
+  detectionLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  showGizmos: 0
+  tagList: []
+  offset: {x: 0, y: 0, z: 0}
 --- !u!1 &3750025568410681273
 GameObject:
   m_ObjectHideFlags: 0

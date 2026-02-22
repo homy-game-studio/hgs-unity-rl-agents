@@ -19,8 +19,8 @@ public class TruckAgent : Agent
     [SerializeField] SpriteRenderer trailerSprite;
 
     [Header("Sensors")]
-    [SerializeField] RaySensor cabinSensor;
-    [SerializeField] RaySensor trailerSensor;
+    [SerializeField] RaySensor2D cabinSensor;
+    [SerializeField] RaySensor2D trailerSensor;
     [SerializeField] IntersectionSensor2D intersectionSensor2D;
     [SerializeField] CollisionSensor2D collisionSensor2D;
     [SerializeField] Transform parkingZone;
