@@ -1,8 +1,6 @@
-using HGS.RLAgents.NeuralNetworks;
-
-namespace HGS.RLAgents
+namespace HGS.RLAgents.NeuralNetworks
 {
-    public static class NeuralNetworkUtility
+    public static class NeuralNetworkFactory
     {
         public static NeuralNetwork CreateFromModel(Model model)
         {
