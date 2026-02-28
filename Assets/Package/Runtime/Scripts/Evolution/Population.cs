@@ -1,125 +1,71 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
-using UnityEngine;
 
 namespace HGS.RLAgents.Evolution
 {
     public class Population
     {
-        public List<float> AvgRewards { get; private set; } = new List<float>();
-        private List<Agent> _agents = new List<Agent>();
-        private List<Cromossome> _bestCromossomes = new List<Cromossome>();
-        private List<Cromossome> _cromossomes = new List<Cromossome>();
+        public Individual[] Individuals { get; private set; }
+        public float AvgEliteFitness { get; private set; }
+        public float BestFitness { get; private set; }
+        public Individual BestIndividual { get; private set; }
 
-        int _crossoverPoint;
-        float _mutationRate;
-        float _mutationStrength;
-        CromossomeMutationMode _mutationMode;
+        public bool HasPendingEvaluations => Individuals.Any(i => i.State == EvaluationState.Pending);
+        public bool HasCompletedEvaluation => Individuals.All(i => i.State == EvaluationState.Evaluated);
+        public int EvaluatedCount => Individuals.Count(i => i.IsEvaluated);
 
-        private List<Agent> _bestAgents = new List<Agent>();
-
-        public float AverageBestReward => _bestAgents.Average(a => a.reward);
-
-        public void Initialize()
+        public Population(
+           int size,
+           Func<int, Individual> factory)
         {
-            foreach (var agent in _agents)
-            {
-                if (agent.loadCromossomeOnAwake) continue;
+            Individuals = new Individual[size];
 
-                var size = agent.CromossomeSize;
-                var cromossome = new Cromossome(size);
-                for (var i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
+                Individuals[i] = factory(i);
+        }
+
+        public void Evaluate(int individualId, float fitness)
+        {
+            Individuals[individualId].State = EvaluationState.Evaluated;
+            Individuals[individualId].Fitness = fitness;
+        }
+
+        public Individual FindUnevaluatedIndividual()
+        {
+            for (int i = 0; i < Individuals.Length; i++)
+            {
+                if (Individuals[i].State == EvaluationState.Pending)
                 {
-                    cromossome.Init(i, agent.model.mutationStrength, agent.model.mutationMode);
+                    Individuals[i].State = EvaluationState.Running;
+                    return Individuals[i];
                 }
-                agent.SetCromossome(cromossome);
             }
+
+            return default;
         }
 
-        public void AddAgent(Agent agent) => _agents.Add(agent);
-
-        public void Select()
+        public void Evolve(
+            float selectionRate,
+            float crossoverRate,
+            float mutationRate,
+            float mutationStrength)
         {
-            _cromossomes.Clear();
-
-            float selectionRate = _agents[0].model.selectionRate;
-
-            int populationSize = _agents.Count;
-            int eliteCount = Mathf.Max(2, Mathf.CeilToInt(populationSize * selectionRate));
-
-            var bestAgents = _agents
-                .OrderByDescending(agent => agent.reward)
-                .Take(eliteCount)
-                .ToList();
-
-            var best = bestAgents[0];
-
-            _crossoverPoint = best.model.crossoverPoint;
-            _mutationRate = best.model.mutationRate;
-            _mutationMode = best.model.mutationMode;
-            _mutationStrength = best.model.mutationStrength;
-            _bestAgents = bestAgents;
-
-            _bestCromossomes = bestAgents
-                .Select(agent => (Cromossome)agent.cromossome.Clone())
-                .ToList();
-
-            AvgRewards.Add(AverageBestReward);
-        }
-
-        public void SaveProgress()
-        {
-            var best = _bestAgents[0];
-            best.model.SaveCromossome(best.cromossome);
-        }
-
-        public void Crossover()
-        {
-            int populationSize = _agents.Count;
-            int eliteCount = _bestCromossomes.Count;
-
-            for (int i = 0; i < populationSize; i++)
-            {
-                if (i == 0)
-                {
-                    // Keep the best cromossome
-                    _cromossomes.Add((Cromossome)_bestCromossomes[0].Clone());
-                    continue;
-                }
-
-                var parentA = _bestCromossomes[Random.Range(0, eliteCount)];
-                var parentB = _bestCromossomes[Random.Range(0, eliteCount)];
-
-                int point = Random.Range(0, parentA.genes.Length);
-
-                var cromossome = Cromossome.Crossover(parentA, parentB, _crossoverPoint);
-                _cromossomes.Add(cromossome);
-            }
-        }
-
-        public void Mutate()
-        {
-            var populationSize = _agents.Count();
-
-            for (var i = 0; i < populationSize; i++)
-            {
-                if (i == 0)
-                {
-                    // Do not mutate the best cromossome
-                    continue;
-                }
-                _cromossomes[i].Mutate(_mutationRate, _mutationStrength, _mutationMode);
-            }
-        }
-
-        public void Replace()
-        {
-            var populationSize = _agents.Count();
-
-            for (var i = 0; i < populationSize; i++)
-            {
-                _agents[i].SetCromossome(_cromossomes[i]);
-            }
+            float avgEliteFitness = 0;
+            float bestFitness = 0;
+            Individual bestIndividual = new Individual();
+            Individuals = GeneticAlgorithm.Evolve(
+                Individuals,
+                selectionRate,
+                crossoverRate,
+                mutationRate,
+                mutationStrength,
+                out avgEliteFitness,
+                out bestFitness,
+                out bestIndividual
+            );
+            AvgEliteFitness = avgEliteFitness;
+            BestFitness = bestFitness;
+            BestIndividual = bestIndividual;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace HGS.RLAgents.StackerSample
             reward -= 0.1f * Agent.evaluationCount;
             reward -= 0.3f * Agent.CollisionCount;
 
-            Agent.reward = reward;
+            Agent.fitness = reward;
         }
 
         public override void StartEpoch()
@@ -29,7 +29,7 @@ namespace HGS.RLAgents.StackerSample
 
         public override void TransitionIn()
         {
-            Agent.onCollideWithMapEvt += env.CompleteEpoch;
+            //Agent.onCollideWithMapEvt += env.CompleteEpoch;
             Agent.onDeliveryCrateEvt += OnAgentDeliveryCrate;
         }
 
@@ -37,7 +37,7 @@ namespace HGS.RLAgents.StackerSample
         {
             env.RespawnCrates();
 
-            Agent.onCollideWithMapEvt -= env.CompleteEpoch;
+            //Agent.onCollideWithMapEvt -= env.CompleteEpoch;
             Agent.onDeliveryCrateEvt -= OnAgentDeliveryCrate;
         }
 
@@ -45,7 +45,7 @@ namespace HGS.RLAgents.StackerSample
         {
             if (env.agent.DeliveredCrates >= env.CrateCount)
             {
-                env.CompleteEpoch();
+                //env.CompleteEpoch();
             }
         }
     }

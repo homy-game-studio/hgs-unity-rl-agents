@@ -2,15 +2,15 @@ using System;
 using HGS.RLAgents.Evolution;
 using HGS.RLAgents.NeuralNetworks;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace HGS.RLAgents
 {
     public abstract class Agent : MonoBehaviour
     {
         [Header("Evolution")]
-        public Cromossome cromossome;
         public Model model;
-        public bool loadCromossomeOnAwake= false;
+        public TextAsset genome;
 
         [Header("Evaluation")]
         public float evaluateInterval = 0.15f;
@@ -18,39 +18,50 @@ namespace HGS.RLAgents
 
         private float _timer = 0;
 
-        public float reward = 0;
+        public float fitness = 0;
         public int evaluationCount = 0;
 
         protected float[] _lastInput;
         protected float[] _lastOutput;
 
         private NeuralNetwork _neuralNetwork;
+        private int _genomeId;
 
         public float[] LastInput => _lastInput;
         public float[] LastOutput => _lastOutput;
 
         public Action onEvaluationEnd;
 
-        public int CromossomeSize => model.GetParametersCount();
+        public int ParametersCount => model.GetParametersCount();
         public NeuralNetwork NeuralNetwork => _neuralNetwork;
+        public int GenomeId => _genomeId;
 
         protected virtual void Awake()
         {
-            _neuralNetwork = NeuralNetworkUtility.CreateFromModel(model);
-            if (loadCromossomeOnAwake)
+            _neuralNetwork = NeuralNetworkFactory.CreateFromModel(model);
+
+            if (genome)
             {
-                var loadedCromossome = model.LoadCromossome();
-                SetCromossome(loadedCromossome);
+                var genomeData = JsonConvert.DeserializeObject<Genome>(genome.text);
+                SetGenome(-1, genomeData);
+                active = true;
             }
         }
 
         protected abstract float[] CollectObservations();
         protected abstract void EvaluateOutput(float[] output);
 
-        public virtual void SetCromossome(Cromossome cromossome)
+        public virtual void SetGenome(int genomeId, Genome genome)
         {
-            this.cromossome = cromossome;
-            _neuralNetwork.SetParameters(cromossome.genes);
+            if (genome.Genes.Length == ParametersCount)
+            {
+                _genomeId = genomeId;
+                _neuralNetwork.SetParameters(genome.Genes);
+            }
+            else
+            {
+                Debug.LogWarning($"Genome parameters count ({genome.Genes.Length}) does not match model parameters count ({ParametersCount}).");
+            }
         }
 
         protected virtual void FeedFoward()

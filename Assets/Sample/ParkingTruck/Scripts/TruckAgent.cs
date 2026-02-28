@@ -100,13 +100,13 @@ public class TruckAgent : Agent
         ApplySteering();
     }
 
-    public override void SetCromossome(Cromossome cromossome)
+    public override void SetGenome(int id, Genome genome)
     {
-        base.SetCromossome(cromossome);
+        base.SetGenome(id, genome);
         var color = new Color(
-            (cromossome.GetGene(0) + 1f) / 2f,
-            (cromossome.GetGene(1) + 1f) / 2f,
-            (cromossome.GetGene(2) + 1f) / 2f
+            (genome.GetGene(0) + 1f) / 2f,
+            (genome.GetGene(1) + 1f) / 2f,
+            (genome.GetGene(2) + 1f) / 2f
         );
         cabinSprite.color = color;
         trailerSprite.color = color * 0.8f;
@@ -262,6 +262,6 @@ public class TruckAgent : Agent
         GUI.Label(new Rect(10, 250, 500, 50), $"Angle to Parking: {AngleToParkingZone:P2}");
         GUI.Label(new Rect(10, 300, 500, 50), $"Angle Cabin-Trailer: {AngleBetweenCabinAndTrailer:P2}");
         // Reward
-        GUI.Label(new Rect(10, 350, 500, 50), $"Reward: {reward:F2}");
+        GUI.Label(new Rect(10, 350, 500, 50), $"Reward: {fitness:F2}");
     }
 }

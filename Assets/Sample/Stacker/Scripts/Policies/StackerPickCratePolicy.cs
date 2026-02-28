@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace HGS.RLAgents.StackerSample
@@ -19,10 +17,10 @@ namespace HGS.RLAgents.StackerSample
 
             // Penalidades
             if (Agent.IsCollidedWithMap) reward -= 20f;
-            reward -= 0.1f * (Agent.IdleTime / env.MaxEpochDuration);
+            //reward -= 0.1f * (Agent.IdleTime / env.MaxEpochDuration);
             reward -= 0.01f * Agent.evaluationCount;
 
-            Agent.reward = reward;
+            Agent.fitness = reward;
         }
 
         public override void StartEpoch()
@@ -34,7 +32,7 @@ namespace HGS.RLAgents.StackerSample
         public override void TransitionIn()
         {
             Agent.onPickCrateEvt += OnAgentPickCrate;
-            Agent.onCollideWithMapEvt += env.CompleteEpoch;
+            //Agent.onCollideWithMapEvt += env.CompleteEpoch;
         }
 
         public override void TransitionOut()
@@ -42,7 +40,7 @@ namespace HGS.RLAgents.StackerSample
             env.RespawnCrates();
 
             Agent.onPickCrateEvt -= OnAgentPickCrate;
-            Agent.onCollideWithMapEvt -= env.CompleteEpoch;
+            //Agent.onCollideWithMapEvt -= env.CompleteEpoch;
         }
 
         private void OnAgentPickCrate(Transform crate)
@@ -51,7 +49,7 @@ namespace HGS.RLAgents.StackerSample
             crate.gameObject.SetActive(false);
             if (env.agent.PickedCrateCount >= env.CrateCount)
             {
-                env.CompleteEpoch();
+                //env.CompleteEpoch();
             }
         }
     }

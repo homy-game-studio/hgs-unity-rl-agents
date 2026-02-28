@@ -1149,6 +1149,64 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47569432}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &54938294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 54938296}
+  - component: {fileID: 54938295}
+  m_Layer: 0
+  m_Name: Training
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &54938295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54938294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe911ab388aee46499ca3a81b4bde85a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  phases:
+  - name: main
+    generations: 50
+    populationSize: 400
+    selectionRate: 0.1
+    crossoverRate: 0.5
+    mutationRate: 0.1
+    mutationStrength: 0.5
+    environmentPrefab: {fileID: 998542374}
+    environmentSpacing: 0
+    maxDuration: 60
+    maxRenderers: 50
+    maxAgents: 400
+--- !u!4 &54938296
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54938294}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 998542375}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &62477020
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,60 +2071,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 825400797}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &145261318
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 145261320}
-  - component: {fileID: 145261319}
-  m_Layer: 0
-  m_Name: Academy
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &145261319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 145261318}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9cc7b46b17239d42a116c90fdaf8da5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _runner:
-    maxGenerations: 100000
-    maxGenerationDuration: 30
-  _environmentReplication:
-    environmentGo: {fileID: 998542374}
-    numberOfRenderers: 25
-    numberOfInstances: 550
-    size: 0
-  timescale: 1
---- !u!4 &145261320
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 145261318}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.85, y: 0.65, z: 24.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 998542375}
-  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &159706740
 GameObject:
@@ -10770,13 +10774,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ac5d055254e63418d94f2db2e3b260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cromossome:
-    genes: []
   model: {fileID: 11400000, guid: ba20deaff2a4cb245b37f33ed7f467e5, type: 2}
-  loadCromossomeOnAwake: 0
+  genome: {fileID: 0}
   evaluateInterval: 0.2
   active: 0
-  reward: 0
+  fitness: 0
   evaluationCount: 0
   bodyParts:
   - {fileID: 135031126}
@@ -12699,7 +12701,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 998542375}
-  - component: {fileID: 998542376}
   - component: {fileID: 998542377}
   m_Layer: 0
   m_Name: Env
@@ -12707,7 +12708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &998542375
 Transform:
   m_ObjectHideFlags: 0
@@ -12717,29 +12718,13 @@ Transform:
   m_GameObject: {fileID: 998542374}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3.8, y: 0.014189899, z: 24.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 825400797}
-  m_Father: {fileID: 145261320}
+  m_Father: {fileID: 54938296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &998542376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 998542374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e0fe4dffa58a94fb86055d81976305, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  policyWalker:
-    policies:
-    - startEpoch: 0
-      policy: {fileID: 998542377}
 --- !u!114 &998542377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12752,8 +12737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592652ff295415a45ae6a75b9fca0537, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGenerationTime: 60
-  env: {fileID: 998542376}
+  maxEpochDuration: 0
   agent: {fileID: 825400801}
 --- !u!1 &1012365896
 GameObject:
@@ -20629,7 +20613,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1690487799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20642,7 +20626,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f716f5d358a1e5b4797b2f21dbc48109, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  academy: {fileID: 145261319}
   updateInterval: 0.2
   agent: {fileID: 825400801}
   neuralNetworkDrawer:
@@ -20651,6 +20634,8 @@ MonoBehaviour:
     layerSpacing: 71
     neuronSpacing: 36
     backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  showInputs: 0
+  showOutputs: 0
   fontColor: {r: 0, g: 0, b: 0, a: 1}
   fontSize: 24
 --- !u!4 &1690487800
@@ -26995,7 +26980,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 966315376}
-  - {fileID: 145261320}
   - {fileID: 1690487800}
   - {fileID: 63466092}
   - {fileID: 977820240}
+  - {fileID: 54938296}

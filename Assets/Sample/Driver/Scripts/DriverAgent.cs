@@ -30,14 +30,15 @@ namespace HGS.RLAgents.DriverSample
             base.Awake();
         }
 
-        public override void SetCromossome(Cromossome cromossome)
+        public override void SetGenome(int id, Genome genome)
         {
-            base.SetCromossome(cromossome);
+            base.SetGenome(id, genome);
             var color = new Color(
-                (cromossome.GetGene(0) + 1f) / 2f,
-                (cromossome.GetGene(1) + 1f) / 2f,
-                (cromossome.GetGene(2) + 1f) / 2f
+                (genome.GetGene(0) + 1f) / 2f,
+                (genome.GetGene(1) + 1f) / 2f,
+                (genome.GetGene(2) + 1f) / 2f
             );
+
             for (int i = 0; i < bodyParts.Length; i++)
             {
                 bodyParts[i].material.color = color;

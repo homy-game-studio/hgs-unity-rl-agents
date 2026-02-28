@@ -1,9 +1,10 @@
 using HGS.RLAgents;
+using HGS.RLAgents.Simulation;
 using UnityEngine;
 
 public class TruckParkPolicy : Policy
 {
-    [SerializeField] Environment env;
+    [SerializeField] SimulationEnvironment env;
     [SerializeField] Transform target;
     [SerializeField] Transform trailer;
     [SerializeField] TruckAgent agent;
@@ -23,11 +24,11 @@ public class TruckParkPolicy : Policy
     {
         float distance = Vector3.Distance(trailer.position, target.position);
 
-        agent.reward -= 0.001f;
-        agent.reward -= distance * 0.002f;
-        agent.reward -= agent.AngleBetweenCabinAndTrailer * 0.01f;
-        agent.reward += agent.TrailerAlignmentToParking * 0.01f;
-        agent.reward += agent.ParkingPercent;
+        agent.fitness -= 0.001f;
+        agent.fitness -= distance * 0.002f;
+        agent.fitness -= agent.AngleBetweenCabinAndTrailer * 0.01f;
+        agent.fitness += agent.TrailerAlignmentToParking * 0.01f;
+        agent.fitness += agent.ParkingPercent;
     }
 
     public override void TransitionIn()
@@ -41,8 +42,8 @@ public class TruckParkPolicy : Policy
     {
         if (agent.active && agent.IsCollidedWithMap)
         {
-            agent.reward -= 1f;
-            env.CompleteEpoch();
+            agent.fitness -= 1f;
+            env.FinishEpoch();
         }
     }
 }

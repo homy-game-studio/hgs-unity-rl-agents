@@ -12,12 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d878e9db25ec6b41b878dad0ce58ef3, type: 3}
   m_Name: DriverModel
   m_EditorClassIdentifier: 
-  populationId: driver
-  mutationMode: 1
-  mutationRate: 0.2
-  mutationStrength: 0.5
-  selectionRate: 0.1
-  crossoverPoint: 0
+  id: driver
   neuralNetworkPoint: 0
   layers:
   - size: 2

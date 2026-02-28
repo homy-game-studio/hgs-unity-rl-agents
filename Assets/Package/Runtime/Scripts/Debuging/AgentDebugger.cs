@@ -4,7 +4,6 @@ namespace HGS.RLAgents.Debuging
 {
     public class AgentDebugger : MonoBehaviour
     {
-        [SerializeField] Academy academy;
         [SerializeField] float updateInterval = 0.5f;
         [SerializeField] Agent agent;
         [SerializeField] NeuralNetworkDrawer neuralNetworkDrawer;
@@ -100,15 +99,15 @@ namespace HGS.RLAgents.Debuging
 
             GUI.DrawTexture(rect, neuralNetworkDrawer.Texture, ScaleMode.ScaleToFit, false);
             DrawTitle("ACADEMY");
-            DrawField("Generation", academy.Generations);
-            // Amostra dos ultimos 10 rewards
-            for (int i = 0; i < 10; i++)
-            {
-                if (academy.AvgRewards.ContainsKey(agent.model.populationId) && academy.AvgRewards[agent.model.populationId].Count > i)
-                {
-                    DrawField($"Reward {academy.Generations - i}", academy.AvgRewards[agent.model.populationId][academy.AvgRewards[agent.model.populationId].Count - 1 - i]);
-                }
-            }
+            //DrawField("Generation", academy.Generations);
+            //// Amostra dos ultimos 10 rewards
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    if (academy.AvgRewards.ContainsKey(agent.model.populationId) && academy.AvgRewards[agent.model.populationId].Count > i)
+            //    {
+            //        DrawField($"Reward {academy.Generations - i}", academy.AvgRewards[agent.model.populationId][academy.AvgRewards[agent.model.populationId].Count - 1 - i]);
+            //    }
+            //}
             DrawTitle("BETTER AGENT");
             DrawField("Active", agent.active);
             DrawField("Evaluations", agent.evaluationCount);

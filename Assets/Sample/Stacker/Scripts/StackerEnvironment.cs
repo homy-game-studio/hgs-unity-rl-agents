@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using HGS.RLAgents.Simulation;
 using UnityEngine;
 
 namespace HGS.RLAgents.StackerSample
 {
-    public class StackerEnvironment : Environment
+    public class StackerEnvironment : SimulationEnvironment
     {
         [SerializeField] Transform botttomLeftLimit;
         [SerializeField] Transform topRightLimit;
@@ -17,10 +18,8 @@ namespace HGS.RLAgents.StackerSample
 
         public int CrateCount => crates.Count;
 
-        protected override void Awake()
+        void Awake()
         {
-            base.Awake();
-
             _initialCratePoses = crates
                 .Select(crate => new Pose(crate.position, crate.rotation))
                 .ToList();
@@ -63,6 +62,11 @@ namespace HGS.RLAgents.StackerSample
             {
                 RespawnCrate(i);
             }
+        }
+
+        public override void EvaluateFitness()
+        {
+            throw new System.NotImplementedException();
         }
     }
 
