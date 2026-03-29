@@ -12,18 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d878e9db25ec6b41b878dad0ce58ef3, type: 3}
   m_Name: TruckModel
   m_EditorClassIdentifier: 
-  populationId: truck
-  mutationMode: 1
-  mutationRate: 0.0015
-  mutationStrength: 0.25
-  selectionRate: 0.1
-  crossoverPoint: 0
+  id: truck
   neuralNetworkPoint: 0
   layers:
-  - size: 24
+  - size: 64
+    activation: 2
+  - size: 32
+    activation: 2
+  - size: 3
     activation: 1
-  - size: 12
-    activation: 1
-  - size: 2
-    activation: 1
-  inputSize: 14
+  inputSize: 24

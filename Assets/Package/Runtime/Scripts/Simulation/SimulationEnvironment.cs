@@ -8,6 +8,7 @@ namespace HGS.RLAgents.Simulation
         [HideInInspector]
         public float maxEpochDuration;
 
+
         protected float elapsedTime;
 
         protected bool isFinished;
@@ -74,9 +75,10 @@ namespace HGS.RLAgents.Simulation
 
         public void ToggleRenderer(bool value)
         {
-            foreach (var agent in Agents)
+            var renderes = GetComponentsInChildren<Renderer>();
+            for (int i = 0; i < renderes.Length; i++)
             {
-                agent.ToggleRenderer(value);
+                renderes[i].enabled = value;
             }
         }
 
