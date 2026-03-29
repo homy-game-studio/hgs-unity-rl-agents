@@ -73,15 +73,6 @@ namespace HGS.RLAgents
             onEvaluationEnd?.Invoke();
         }
 
-        public void ToggleRenderer(bool value)
-        {
-            var renderes = GetComponentsInChildren<Renderer>();
-            for (int i = 0; i < renderes.Length; i++)
-            {
-                renderes[i].enabled = value;
-            }
-        }
-
         public abstract void Stop();
         public abstract void Respawn();
 
