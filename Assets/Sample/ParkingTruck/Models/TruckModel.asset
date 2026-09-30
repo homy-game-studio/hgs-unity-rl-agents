@@ -15,9 +15,9 @@ MonoBehaviour:
   id: truck
   neuralNetworkPoint: 0
   layers:
-  - size: 64
+  - size: 48
     activation: 2
-  - size: 32
+  - size: 16
     activation: 2
   - size: 3
     activation: 1

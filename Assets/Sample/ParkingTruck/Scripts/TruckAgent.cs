@@ -18,11 +18,13 @@ public class TruckAgent : Agent
     [SerializeField] TruckTraillerPhysics trailerPhysics;
 
     [Header("Sensors")]
+    [SerializeField] CollisionSensor collisionSensor;
     [SerializeField] RaySensor truckRaySensor;
     [SerializeField] RaySensor trailerRaySensor;
     [SerializeField] Transform parkingZone;
     [SerializeField] float maxDistanceToParkingZone = 20f;
 
+    public float FowardVelocity => truckPhysics.ForwardVelocity;
     public float NormalizedDistanceToParkingZone => Vector3.Distance(trailerPhysics.transform.position, parkingZone.position) / maxDistanceToParkingZone;
     public float AngleToParkingZone => Vector3.SignedAngle(trailerPhysics.transform.forward, (parkingZone.position - trailerPhysics.transform.position).normalized, Vector3.up);
     public float AlignmentToParkingZone => Vector3.Dot(trailerPhysics.transform.forward, parkingZone.forward);
@@ -42,6 +44,7 @@ public class TruckAgent : Agent
         StartNormalizedDistanceToParkingZone = NormalizedDistanceToParkingZone;
         StartAlignmentToParkingZone = AlignmentToParkingZone;
         StartAlignmentToTrailer = AlignmentToTrailer;
+        collisionSensor.onCollisionEnterEvent += OnCollisionEnter;
     }
 
 
