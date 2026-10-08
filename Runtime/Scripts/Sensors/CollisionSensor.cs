@@ -16,48 +16,36 @@ namespace HGS.RLAgents
 
         private void Awake()
         {
-            for (int i = 0; i < rigidbodies?.Length; i++)
+            if (rigidbodies == null) return;
+
+            for (int i = 0; i < rigidbodies.Length; i++)
             {
-                var child = rigidbodies[i].gameObject?.AddComponent<CollisionSensor>();
-                if (child != null) child.parent = this;
+                if (rigidbodies[i] == null) continue;
+
+                // Collisions of this rigidbody are already received by this component
+                if (rigidbodies[i].gameObject == gameObject) continue;
+
+                var child = rigidbodies[i].gameObject.AddComponent<CollisionSensor>();
+                child.parent = this;
             }
         }
 
         void OnCollisionEnter(Collision col)
         {
-            if (parent != null)
-            {
-                parent.onCollisionEnterEvent?.Invoke(col);
-            }
-            else
-            {
-                onCollisionEnterEvent?.Invoke(col);
-
-            }
+            if (parent != null) parent.onCollisionEnterEvent?.Invoke(col);
+            else onCollisionEnterEvent?.Invoke(col);
         }
 
         void OnCollisionStay(Collision col)
         {
-            if (onCollisionStayEvent != null)
-            {
-                onCollisionStayEvent?.Invoke(col);
-            }
-            else
-            {
-                parent?.onCollisionStayEvent?.Invoke(col);
-            }
+            if (parent != null) parent.onCollisionStayEvent?.Invoke(col);
+            else onCollisionStayEvent?.Invoke(col);
         }
 
         void OnCollisionExit(Collision col)
         {
-            if (parent != null)
-            {
-                parent.onCollisionExitEvent?.Invoke(col);
-            }
-            else
-            {
-                onCollisionExitEvent?.Invoke(col);
-            }
+            if (parent != null) parent.onCollisionExitEvent?.Invoke(col);
+            else onCollisionExitEvent?.Invoke(col);
         }
     }
 }
