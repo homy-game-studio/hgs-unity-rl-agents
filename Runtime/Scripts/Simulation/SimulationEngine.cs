@@ -8,6 +8,7 @@ namespace HGS.RLAgents.Simulation
     {
         public string ModelId { get; set; }
         public int ModelParamsCount { get; set; }
+        public TextAsset SeedGenome { get; set; }
     }
 
     [Serializable]
@@ -39,6 +40,7 @@ namespace HGS.RLAgents.Simulation
                 {
                     ModelId = agentId,
                     ModelParamsCount = agentParamsCount,
+                    SeedGenome = sample.Agents[i].model.seedGenome,
                 });
             }
 
@@ -66,6 +68,14 @@ namespace HGS.RLAgents.Simulation
             foreach (var env in _availableEnvironments)
             {
                 env.maxEpochDuration = value;
+            }
+        }
+
+        public void SetDifficulty(float value)
+        {
+            foreach (var env in _availableEnvironments)
+            {
+                env.SetDifficulty(value);
             }
         }
 
