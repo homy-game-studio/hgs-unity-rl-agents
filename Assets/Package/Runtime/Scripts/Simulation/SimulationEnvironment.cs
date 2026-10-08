@@ -11,7 +11,8 @@ namespace HGS.RLAgents.Simulation
 
         protected float elapsedTime;
 
-        protected bool isFinished;
+        // Idle until StartEpoch: an environment waiting in the queue must not count time
+        protected bool isFinished = true;
 
         Agent[] _agents;
         public Agent[] Agents
@@ -28,13 +29,22 @@ namespace HGS.RLAgents.Simulation
 
         public Action onFinishEpoch;
 
+        // Curriculum hook: 0 = easiest, 1 = full difficulty. Applied on the next StartEpoch.
+        public float Difficulty { get; private set; } = 1f;
+
+        public virtual void SetDifficulty(float value)
+        {
+            Difficulty = Mathf.Clamp01(value);
+        }
+
         public abstract void EvaluateFitness();
 
-        protected virtual void Update()
+        // Fixed step keeps the epoch length identical (in physics steps) for every evaluation
+        protected virtual void FixedUpdate()
         {
             if (!isFinished)
             {
-                elapsedTime += Time.deltaTime;
+                elapsedTime += Time.fixedDeltaTime;
                 if (elapsedTime >= maxEpochDuration)
                 {
                     FinishEpoch();
@@ -62,6 +72,7 @@ namespace HGS.RLAgents.Simulation
         public void StartEpoch()
         {
             isFinished = false;
+            elapsedTime = 0;
 
             foreach (var agent in Agents)
             {
