@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using HGS.RLAgents.Evolution;
 using HGS.RLAgents.Simulation;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace HGS.RLAgents.Training
@@ -41,15 +42,21 @@ namespace HGS.RLAgents.Training
                 // Preserve old population and genomes
                 if (evolution.HasPopulation(agentSettings[i].ModelId)) continue;
 
+                var seed = LoadSeed(agentSettings[i]);
+
                 evolution.AddPopulation(agentSettings[i].ModelId, phase.populationSize, (int id) =>
                 {
-                    return CreateIndividual(id, agentSettings[i].ModelParamsCount, phase.mutationStrength);
+                    return seed.HasValue
+                        ? CreateSeededIndividual(id, seed.Value, phase.mutationRate, phase.mutationStrength)
+                        : CreateIndividual(id, agentSettings[i].ModelParamsCount, phase.mutationStrength);
                 });
             }
 
             evolution.Generation = 0;
 
             simulation.SetMaxDuration(phase.maxDuration);
+            simulation.SetDifficulty(phase.difficulty);
+            Time.timeScale = phase.timeScale;
 
             _shouldTick = true;
         }
@@ -59,6 +66,7 @@ namespace HGS.RLAgents.Training
             if (evolution.HasCompletedEvaluation)
             {
                 RunEvolution();
+                ApplyDifficultyRamp(phases[currentPhaseIndex]);
             }
 
             if (evolution.Generation >= phases[currentPhaseIndex].generations)
@@ -86,8 +94,21 @@ namespace HGS.RLAgents.Training
             debugger.Update(simulation, evolution, currentPhaseIndex, phases);
         }
 
+        // Every environment is free here (all individuals were evaluated), so the new difficulty
+        // applies to the whole next generation
+        void ApplyDifficultyRamp(TrainingPhase phase)
+        {
+            if (!phase.rampDifficulty) return;
+
+            float progress = phase.generations > 0 ? Mathf.Clamp01(evolution.Generation / (float)phase.generations) : 1f;
+            float difficulty = Mathf.Lerp(phase.difficulty, phase.difficultyEnd, progress);
+            simulation.SetDifficulty(difficulty);
+            Debug.Log($"[Training] phase '{phase.name}' generation {evolution.Generation}/{phase.generations} | difficulty {difficulty:F3}");
+        }
+
         private void CompleteTraining()
         {
+            Time.timeScale = 1f;
             Debug.Log("Training complete!");
         }
 
@@ -114,6 +135,46 @@ namespace HGS.RLAgents.Training
             }
 
             env.StartEpoch();
+        }
+
+        // Model.seedGenome, if it is set and matches the model. A mismatch is a warning, not a crash:
+        // the population falls back to random weights.
+        private Genome? LoadSeed(SimulationAgentSettings settings)
+        {
+            if (settings.SeedGenome == null) return null;
+
+            var genome = JsonConvert.DeserializeObject<Genome>(settings.SeedGenome.text);
+            if (genome.Genes == null || genome.Genes.Length != settings.ModelParamsCount)
+            {
+                Debug.LogWarning($"[Training] seed genome of '{settings.ModelId}' has {genome.Genes?.Length ?? 0} genes but the model needs {settings.ModelParamsCount}, using random weights.");
+                return null;
+            }
+
+            Debug.Log($"[Training] population '{settings.ModelId}' starts from its seed genome");
+            return genome;
+        }
+
+        // Individual 0 is the seed untouched, the others are mutated copies of it
+        private Individual CreateSeededIndividual(int id, Genome seed, float mutationRate, float mutationStrength)
+        {
+            var genome = new Genome(seed.Genes.Length);
+            System.Array.Copy(seed.Genes, genome.Genes, seed.Genes.Length);
+
+            if (id > 0)
+            {
+                for (int i = 0; i < genome.Genes.Length; i++)
+                {
+                    if (Rand.Linear() < mutationRate) genome.Genes[i] += Rand.Gaussian(0f, mutationStrength);
+                }
+            }
+
+            return new Individual
+            {
+                Id = id,
+                Genome = genome,
+                Fitness = 0,
+                State = EvaluationState.Pending,
+            };
         }
 
         private Individual CreateIndividual(int id, int gnomeSize, float strength)

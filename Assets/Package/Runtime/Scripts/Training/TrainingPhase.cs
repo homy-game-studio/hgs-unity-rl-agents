@@ -24,5 +24,10 @@ namespace HGS.RLAgents.Training
         public float maxDuration = 10f;
         public int maxRenderers = 40;
         public int maxAgents = 400;
+
+        [Range(1f, 50f)] public float timeScale = 1f;
+        [Range(0f, 1f)] public float difficulty = 1f;
+        public bool rampDifficulty = false;
+        [Range(0f, 1f)] public float difficultyEnd = 1f;
     }
 }
