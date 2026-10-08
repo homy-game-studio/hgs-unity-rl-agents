@@ -16,12 +16,19 @@ public class TruckPhysics : MonoBehaviour
     [SerializeField] float maxSteerAngle = 30f;
 
     [Header("Smoothing")]
-    [SerializeField] float steerSmoothing = 1f;
+    [SerializeField] float steerSmoothing = 180f; // degrees per second
 
     [Header("Values")]
     [SerializeField] float antiRollForce = 8000f;
     [SerializeField] float acelerationForce = 1000f;
     [SerializeField] float breakingForce = 3000f;
+
+    [Header("Idle brake")]
+    [Tooltip("Holds the truck when the throttle is released, so stopping does not need a separate brake output")]
+    [SerializeField] bool idleBrake = true;
+    [SerializeField] float idleBrakeThrottle = 0.1f;
+    [Range(0f, 1f)]
+    [SerializeField] float idleBrakeFraction = 0.5f;
 
     public float steer;
     public float aceleration;
@@ -32,6 +39,9 @@ public class TruckPhysics : MonoBehaviour
     Vector3 _startPosition;
     Quaternion _startRotation;
 
+    public Vector3 StartPosition => _startPosition;
+    public Quaternion StartRotation => _startRotation;
+
     private void Awake()
     {
         rb.centerOfMass = centerOfMass.localPosition;
@@ -39,10 +49,21 @@ public class TruckPhysics : MonoBehaviour
         _startRotation = rb.rotation;
     }
 
-    public void Respawn()
+    public void Respawn() => Respawn(_startPosition, _startRotation);
+
+    public void Respawn(Vector3 position, Quaternion rotation)
     {
-        rb.position = _startPosition;
-        rb.rotation = _startRotation;
+        rb.position = position;
+        rb.rotation = rotation;
+
+        for (int i = 0; i < wheelColliders.Length; i++)
+        {
+            wheelColliders[i].motorTorque = 0f;
+            wheelColliders[i].brakeTorque = 0f;
+            wheelColliders[i].steerAngle = 0f;
+        }
+
+        Physics.SyncTransforms();
     }
 
     // Update is called once per frame
@@ -79,7 +100,15 @@ public class TruckPhysics : MonoBehaviour
 
     void Acelerate()
     {
-        if (breaking > 0) return;
+        if (breaking > 0)
+        {
+            // Braking cuts the engine: do not keep the last torque applied
+            for (int i = 0; i < wheelColliders.Length; i++)
+            {
+                wheelColliders[i].motorTorque = 0f;
+            }
+            return;
+        }
 
         float force = Mathf.Clamp(aceleration, -1f, 1f) * acelerationForce;
 
@@ -127,7 +156,17 @@ public class TruckPhysics : MonoBehaviour
 
     void Break()
     {
-        float force = Mathf.Clamp01(breaking) * breakingForce;
+        float brake = Mathf.Clamp01(breaking);
+
+        // Fades out as the throttle grows (full at 0, none at the threshold), so a small throttle
+        // can still creep forward instead of hitting a sudden wall of brake
+        if (idleBrake && idleBrakeThrottle > 0f)
+        {
+            float idle = 1f - Mathf.Clamp01(Mathf.Abs(aceleration) / idleBrakeThrottle);
+            brake = Mathf.Max(brake, idleBrakeFraction * idle);
+        }
+
+        float force = brake * breakingForce;
         for (int i = 0; i < wheelColliders.Length; i++)
         {
             wheelColliders[i].brakeTorque = force;

@@ -13,8 +13,15 @@ public class TruckTraillerPhysics : MonoBehaviour
     [Header("Center Of Mass")]
     [SerializeField] Transform centerOfMass;
 
+    // Reference point of the trailer for measuring against the parking zone: the transform
+    // pivot is not the middle of the trailer, so measuring from it favors entering nose first
+    public Vector3 CenterOfMassPosition => centerOfMass != null ? centerOfMass.position : transform.position;
+
     Vector3 _startPosition;
     Quaternion _startRotation;
+
+    public Vector3 StartPosition => _startPosition;
+    public Quaternion StartRotation => _startRotation;
 
     private void Awake()
     {
@@ -23,10 +30,21 @@ public class TruckTraillerPhysics : MonoBehaviour
         _startRotation = rb.rotation;
     }
 
-    public void Respawn()
+    public void Respawn() => Respawn(_startPosition, _startRotation);
+
+    public void Respawn(Vector3 position, Quaternion rotation)
     {
-        rb.position = _startPosition;
-        rb.rotation = _startRotation;
+        rb.position = position;
+        rb.rotation = rotation;
+
+        // Release the trailer brakes applied by Stop()
+        for (int i = 0; i < wheelColliders.Length; i++)
+        {
+            wheelColliders[i].motorTorque = 0f;
+            wheelColliders[i].brakeTorque = 0f;
+        }
+
+        Physics.SyncTransforms();
     }
 
     // Update is called once per frame
@@ -53,6 +71,11 @@ public class TruckTraillerPhysics : MonoBehaviour
 
     public void Stop()
     {
+        for (int i = 0; i < wheelColliders.Length; i++)
+        {
+            wheelColliders[i].brakeTorque = breakingForce;
+        }
+
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }

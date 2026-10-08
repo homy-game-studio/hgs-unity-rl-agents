@@ -235,7 +235,7 @@ Transform:
   m_GameObject: {fileID: 44879474}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 78.61, y: -45.985355, z: -69.88}
+  m_LocalPosition: {x: 21.473934, y: 4.0600014, z: -20.21553}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -248,7 +248,7 @@ Transform:
   - {fileID: 846341336}
   - {fileID: 939596005}
   - {fileID: 1979577985}
-  m_Father: {fileID: 1879269170}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &44879480
 MonoBehaviour:
@@ -275,7 +275,7 @@ MonoBehaviour:
   - {fileID: 1266970195}
   - {fileID: 1662405906}
   - {fileID: 774104510}
-  heuristic: 0
+  heuristic: 1
   truckPhysics: {fileID: 44879477}
   trailerPhysics: {fileID: 603224797}
   collisionSensor: {fileID: 44879481}
@@ -1153,7 +1153,7 @@ GameObject:
   - component: {fileID: 429019054}
   - component: {fileID: 429019055}
   m_Layer: 0
-  m_Name: Training
+  m_Name: Recorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1183,26 +1183,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 429019053}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe911ab388aee46499ca3a81b4bde85a, type: 3}
+  m_Script: {fileID: 11500000, guid: 3bf05142fd213254f85f52dd8528da00, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  phases:
-  - name: full
-    generations: 1000
-    populationSize: 1000
-    selectionRate: 0.05
-    crossoverRate: 0.25
-    mutationRate: 0.02
-    mutationStrength: 0.03
-    environmentPrefab: {fileID: 1879269169}
-    environmentSpacing: 0
-    maxDuration: 80
-    maxRenderers: 20
-    maxAgents: 90
-    timeScale: 3
-    difficulty: 1
-    rampDifficulty: 0
-    difficultyEnd: 1
+  m_EditorClassIdentifier: HGS.RLAgents.Runtime::HGS.RLAgents.Imitation.DemonstrationRecorder
+  agent: {fileID: 44879480}
+  saveKey: 13
+  discardKey: 8
+  minSteps: 20
 --- !u!1 &432438375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1960,7 +1947,7 @@ Transform:
   m_GameObject: {fileID: 603224793}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 78.61, y: -47.225357, z: -75.53999}
+  m_LocalPosition: {x: 21.473934, y: 2.8199997, z: -25.875526}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1971,7 +1958,7 @@ Transform:
   - {fileID: 1793866796}
   - {fileID: 774104508}
   - {fileID: 2014827028}
-  m_Father: {fileID: 1879269170}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &603224795
 Rigidbody:
@@ -6466,75 +6453,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 692820597}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1879269169
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1879269170}
-  - component: {fileID: 1879269171}
-  m_Layer: 0
-  m_Name: Env
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1879269170
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1879269169}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -57.136066, y: 50.045357, z: 49.664467}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 44879479}
-  - {fileID: 603224794}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1879269171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1879269169}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17782aec449615f4497bfa957bc6b1e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxEpochDuration: 0
-  agent: {fileID: 44879480}
-  easyStartPoint: {fileID: 74155649}
-  spawnJitterPosition: 0
-  spawnJitterYaw: 0
-  distanceWeight: 2
-  headingWeight: 2
-  articulationWeight: 0.25
-  proximityWeight: 1.5
-  proximityRadiusMeters: 12
-  collisionPenalty: 0.1
-  impactSpeedPenalty: 1
-  finalSpeedWeight: 0.5
-  successReward: 2
-  successTimeBonus: 1
-  successDistanceMeters: 0.6
-  successAlignParking: 0.98
-  successAlignTrailer: 0.95
-  successMaxSpeed: 0.3
-  stillTimeout: 3
-  stillSpeed: 0.05
-  logNewBest: 1
-  logStats: 1
 --- !u!1 &1926164318
 GameObject:
   m_ObjectHideFlags: 0
@@ -7122,5 +7040,6 @@ SceneRoots:
   - {fileID: 896846656}
   - {fileID: 685301535}
   - {fileID: 692820597}
-  - {fileID: 1879269170}
   - {fileID: 429019054}
+  - {fileID: 44879479}
+  - {fileID: 603224794}
