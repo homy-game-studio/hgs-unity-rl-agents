@@ -19,7 +19,7 @@ namespace HGS.RLAgents.Evolution
 
         public float GetGene(int index)
         {
-            if (Genes.Length == 0 || Genes.Length < index) return 0;
+            if (Genes.Length == 0 || Genes.Length <= index) return 0;
             return Genes[index];
         }
     }
