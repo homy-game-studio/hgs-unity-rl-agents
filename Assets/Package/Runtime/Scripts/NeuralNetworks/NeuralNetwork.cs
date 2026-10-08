@@ -3,50 +3,78 @@ using System.Collections.Generic;
 
 namespace HGS.RLAgents.NeuralNetworks
 {
+    // A pipeline of layers. The genome is the concatenation of the layers' parameters.
     [Serializable]
     public class NeuralNetwork
     {
-        public List<NeuralNetworkLayer> Layers { get; set; }
+        public List<ILayer> Layers { get; set; }
         public List<List<float>> Activations { get; set; }
 
-        public void AddLayer(NeuralNetworkLayer layer)
+        public int ParameterCount
+        {
+            get
+            {
+                int count = 0;
+                if (Layers != null) foreach (var layer in Layers) count += layer.ParameterCount;
+                return count;
+            }
+        }
+
+        public void AddLayer(ILayer layer)
         {
             if (Layers == null)
             {
-                Layers = new List<NeuralNetworkLayer>();
+                Layers = new List<ILayer>();
             }
             Layers.Add(layer);
         }
 
         public float[] GetParameters()
         {
-            var parameters = new List<float>();
+            var parameters = new float[ParameterCount];
+            int index = 0;
             foreach (var layer in Layers)
             {
-                parameters.AddRange(layer.GetWeights());
-                parameters.AddRange(layer.GetBiases());
+                layer.GetParameters(parameters, index);
+                index += layer.ParameterCount;
             }
-            return parameters.ToArray();
+            return parameters;
         }
 
         public void SetParameters(float[] parameters)
         {
+            if (parameters.Length != ParameterCount)
+                throw new ArgumentException($"Expected {ParameterCount} parameters but got {parameters.Length}.");
+
             int index = 0;
-            foreach(var layer in Layers)
+            foreach (var layer in Layers)
             {
-                int weightCount = layer.WeightCount;
-                float[] weights = new float[weightCount];
-
-                Array.Copy(parameters, index, weights, 0, weightCount);
-                layer.SetWeights(weights);
-                index += weightCount;
-
-                float[] biases = new float[(int)layer.Size];
-                Array.Copy(parameters, index, biases, 0, (int)layer.Size);
-                layer.SetBiases(biases);
-
-                index += (int)layer.Size;
+                layer.SetParameters(parameters, index);
+                index += layer.ParameterCount;
             }
+        }
+
+        // Clears the memory of the stateful layers (start of a new episode)
+        public void ResetState()
+        {
+            if (Layers == null) return;
+
+            foreach (var layer in Layers)
+            {
+                layer.ResetState();
+            }
+        }
+
+        // Forward pass without recording the activations: for batch evaluation, not for drawing.
+        // The returned array belongs to the last layer and is overwritten by the next call.
+        public float[] Predict(float[] input)
+        {
+            float[] output = input;
+            foreach (var layer in Layers)
+            {
+                output = layer.Forward(output);
+            }
+            return output;
         }
 
         public float[] FeedForward(float[] input)
@@ -56,7 +84,7 @@ namespace HGS.RLAgents.NeuralNetworks
             float[] prevLayerOutput = input;
             foreach (var layer in Layers)
             {
-                prevLayerOutput = layer.FeedForward(prevLayerOutput);
+                prevLayerOutput = layer.Forward(prevLayerOutput);
                 Activations.Add(new List<float>(prevLayerOutput));
             }
             return prevLayerOutput;
