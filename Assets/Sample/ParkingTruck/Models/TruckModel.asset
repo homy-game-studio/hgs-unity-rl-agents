@@ -15,10 +15,17 @@ MonoBehaviour:
   id: truck
   neuralNetworkPoint: 0
   layers:
-  - size: 48
+  - type: 0
+    size: 48
     activation: 2
-  - size: 16
-    activation: 2
-  - size: 3
+    frames: 0
+  - type: 2
+    size: 16
     activation: 1
-  inputSize: 24
+    frames: 4
+  - type: 0
+    size: 3
+    activation: 1
+    frames: 4
+  inputSize: 20
+  seedGenome: {fileID: 4900000, guid: 9f47e83547c2afd4d9353de159d32b7d, type: 3}

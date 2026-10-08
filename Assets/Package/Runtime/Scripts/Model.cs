@@ -4,11 +4,29 @@ using HGS.RLAgents.NeuralNetworks;
 
 namespace HGS.RLAgents
 {
+    // Values are serialized in the model assets: append new types, never reorder
+    public enum ELayerType
+    {
+        Dense = 0,
+        Elman = 1,
+        LSTM = 2,
+        GRU = 3,
+        FrameStack = 4,
+    }
+
     [Serializable]
     public class ModelLayer
     {
+        public ELayerType type;
+
+        [Tooltip("Neurons (Dense, Elman) or memory units (LSTM, GRU). Ignored by FrameStack.")]
         public int size;
+
+        [Tooltip("Used by Dense and Elman. LSTM and GRU have fixed gate activations. Prefer Tanh on Elman.")]
         public EActivation activation;
+
+        [Tooltip("FrameStack only: how many of the last inputs are kept (output = input size * frames)")]
+        public int frames = 4;
     }
 
     [CreateAssetMenu(fileName = "Model", menuName = "HGS/RLAgents/Model")]
@@ -19,6 +37,9 @@ namespace HGS.RLAgents
         public ModelLayer[] layers;
         public int inputSize;
 
+        [Tooltip("Optional starting genome (e.g. from ImitationTrainer). A new population starts as copies of it, mutated, instead of random weights. Must match this model's parameter count.")]
+        public TextAsset seedGenome;
+
         public int GetParametersCount()
         {
             int count = 0;
@@ -26,41 +47,11 @@ namespace HGS.RLAgents
 
             foreach (var layer in layers)
             {
-                // (pesos + bias) por neurônio
-                count += previousSize * layer.size + layer.size;
-                previousSize = layer.size;
+                count += NeuralNetworkFactory.CountParameters(previousSize, layer);
+                previousSize = NeuralNetworkFactory.GetOutputSize(previousSize, layer);
             }
 
             return count;
         }
-
-        //public void SaveCromossome(Genome cromossome)
-        //{
-        //    var contents = JsonConvert.SerializeObject(cromossome);
-        //    // cria a pasta caso nao exista
-        //    if (!System.IO.Directory.Exists(Application.dataPath + "/Resources/cromossomes"))
-        //    {
-        //        System.IO.Directory.CreateDirectory(Application.dataPath + "/Resources/cromossomes");
-        //    }
-        //    System.IO.File.WriteAllText(Application.dataPath + $"/Resources/cromossomes/{populationId}.json", contents);
-        //    Debug.Log($"Cromossome saved for population {populationId}");
-        //}
-
-        //public Genome LoadCromossome()
-        //{
-        //    var path = Application.dataPath + $"/Resources/cromossomes/{populationId}.json";
-        //    if (System.IO.File.Exists(path))
-        //    {
-        //        var contents = System.IO.File.ReadAllText(path);
-        //        var cromossome = JsonConvert.DeserializeObject<Genome>(contents);
-        //        Debug.Log($"Cromossome loaded for population {populationId}");
-        //        return cromossome;
-        //    }
-        //    else
-        //    {
-        //        Debug.LogWarning($"Cromossome file not found for population {populationId} at path: {path}");
-        //        return new Genome();
-        //    }
-        //}
     }
 }
