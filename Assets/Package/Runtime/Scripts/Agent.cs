@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 
 namespace HGS.RLAgents
 {
+    // Runs before the physics scripts so a decision is applied in the same fixed step
+    [DefaultExecutionOrder(-10)]
     public abstract class Agent : MonoBehaviour
     {
         [Header("Evolution")]
@@ -16,7 +18,8 @@ namespace HGS.RLAgents
         public float evaluateInterval = 0.15f;
         public bool active = false;
 
-        private float _timer = 0;
+        private int _stepCounter = 0;
+        private bool _wasActive = false;
 
         public float fitness = 0;
         public int evaluationCount = 0;
@@ -76,22 +79,42 @@ namespace HGS.RLAgents
         public abstract void Stop();
         public abstract void Respawn();
 
-        protected virtual void Update()
+        // The action currently applied, in the same space as the network output (what a human is doing
+        // in heuristic mode). Needed by DemonstrationRecorder; null = this agent cannot be recorded.
+        public virtual float[] GetAppliedAction() => null;
+
+        // Where a new demonstration starts. Override to vary the start pose.
+        public virtual void RespawnForDemonstration() => Respawn();
+
+        // Kept so subclasses can keep overriding it (input, visuals); decisions run in FixedUpdate
+        protected virtual void Update() { }
+
+        // Deciding once every N physics steps (not N seconds of frame time) makes a genome
+        // behave the same regardless of the frame rate.
+        protected virtual void FixedUpdate()
         {
-            if (!active) return;
-            if (_timer == 0)
+            if (!active)
+            {
+                _wasActive = false;
+                return;
+            }
+
+            if (!_wasActive)
+            {
+                _wasActive = true;
+                _stepCounter = 0;
+
+                // A new episode must not inherit the memory of the previous one
+                _neuralNetwork.ResetState();
+            }
+
+            if (_stepCounter == 0)
             {
                 FeedFoward();
             }
 
-            if (_timer >= evaluateInterval)
-            {
-                _timer = 0;
-            }
-            else
-            {
-                _timer += Time.deltaTime;
-            }
+            var stepsPerDecision = Mathf.Max(1, Mathf.RoundToInt(evaluateInterval / Time.fixedDeltaTime));
+            _stepCounter = (_stepCounter + 1) % stepsPerDecision;
         }
     }
 }
