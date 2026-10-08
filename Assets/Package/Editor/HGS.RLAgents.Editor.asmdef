@@ -1,0 +1,18 @@
+{
+    "name": "HGS.RLAgents.Editor",
+    "rootNamespace": "HGS.RLAgents",
+    "references": [
+        "GUID:012b544c0aa37ed4d864841692f9ec74"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

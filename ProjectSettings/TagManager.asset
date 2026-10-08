@@ -2,8 +2,13 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
-  tags: []
+  serializedVersion: 3
+  tags:
+  - Map
+  - Car
+  - Checkpoint
+  - Enemy
+  - Pickable
   layers:
   - Default
   - TransparentFX
@@ -11,15 +16,15 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Car
+  - Obstacle
+  - Player
+  - Enemy
+  - Target
+  - Pickable
+  - Runner
+  - ParkingZone
+  - Checkpoint
   - 
   - 
   - 
@@ -41,3 +46,5 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  m_RenderingLayers:
+  - Default
